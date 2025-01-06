@@ -1,6 +1,6 @@
-import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import * as path from "path"
 
 export default defineConfig({
   main: {
@@ -10,10 +10,11 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-    resolve: {
-      alias: {
-        '@renderer': resolve('../src/renderer/src')
-      }
+    resolve:{
+      alias:[
+        {find:"@renderer/",replacement:path.resolve("../src/renderer/")},
+        {find:"@ui/",replacement:path.resolve("../src/renderer/src/ui/")},
+      ],
     },
     plugins: [react()]
   }

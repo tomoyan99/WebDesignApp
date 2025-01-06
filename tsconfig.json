@@ -1,4 +1,12 @@
 {
   "files": [],
-  "references": [{ "path": "./configs/tsconfig.node.json" }, { "path": "./configs/tsconfig.web.json" }]
+  "references": [{ "path": "./configs/tsconfig.node.json" }, { "path": "./configs/tsconfig.web.json" }],
+  "include": ["electron.vite.config.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "baseUrl": "./"
+  }
 }
