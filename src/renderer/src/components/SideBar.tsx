@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import {styled, useTheme} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
@@ -19,13 +19,20 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
+
+
+interface AppBarProps extends MuiAppBarProps {
+    open?: boolean;
+}
+
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
     open?: boolean;
 }>(({ theme }) => ({
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: `${theme.spacing(2)} ${theme.spacing(3)}`,
+    height: '100vh',
     transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -45,42 +52,39 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
     ],
 }));
 
-interface AppBarProps extends MuiAppBarProps {
-    open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme }) => ({
-    transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    variants: [
-        {
-            props: ({ open }) => open,
-            style: {
-                width: `calc(100% - ${drawerWidth}px)`,
-                marginLeft: `${drawerWidth}px`,
-                transition: theme.transitions.create(['margin', 'width'], {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
+const AppBar = styled(MuiAppBar,{shouldForwardProp: (prop) => prop !== 'open'})
+    <AppBarProps>(({ theme }) => ({
+        backgroundColor: theme.palette.background.paper,
+        color:"#000000",
+        boxShadow:"none",
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        variants: [
+            {
+                props: ({ open }) => open,
+                style: {
+                    width: `calc(100% - ${drawerWidth}px)`,
+                    marginLeft: `${drawerWidth}px`,
+                    transition: theme.transitions.create(['margin', 'width'], {
+                        easing: theme.transitions.easing.easeOut,
+                        duration: theme.transitions.duration.enteringScreen,
+                    }),
+                },
             },
-        },
-    ],
-}));
+        ],
+    }));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
 }));
 
-export default function SideBar() {
+export default function SideBar({children}:{children?:React.ReactNode}) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
 
@@ -96,24 +100,19 @@ export default function SideBar() {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
-                <Toolbar>
+                <Toolbar variant="dense">
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
                         sx={[
-                            {
-                                mr: 2,
-                            },
+                            {mr: 2},
                             open && { display: 'none' },
                         ]}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Persistent drawer
-                    </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -130,6 +129,9 @@ export default function SideBar() {
                 open={open}
             >
                 <DrawerHeader>
+                    <Typography variant="h5" width={"100%"} paddingLeft={"1em"}>
+                        Header
+                    </Typography>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
@@ -162,7 +164,10 @@ export default function SideBar() {
                 </List>
             </Drawer>
             <Main open={open}>
-                <DrawerHeader />
+                <Toolbar variant="dense"/>
+                <Box height={"93%"} width={"100%"}>
+                    {children}
+                </Box>
             </Main>
         </Box>
     );

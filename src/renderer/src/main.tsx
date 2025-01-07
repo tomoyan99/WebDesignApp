@@ -4,9 +4,9 @@ import App from './App'
 import {Provider} from "./ui/provider"
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-      <Provider>
-          <App/>
-      </Provider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider>
+            <App/>
+        </Provider>
+    </React.StrictMode>
 )
