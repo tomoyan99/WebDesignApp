@@ -1,17 +1,27 @@
-import {Box, HTMLChakraProps} from "@chakra-ui/react";
+import {Box, Heading, HTMLChakraProps} from "@chakra-ui/react";
 
-export default function Area(props:HTMLChakraProps<"div",{}>) {
-    const {children,w,h,bg,...other} = props;
+export default function Area(props:HTMLChakraProps<"div",{}>&{title:string}) {
+    const {children,w,h,bg,title,...other} = props;
     return(
         <Box
             w={"100%"} h={"100%"}
-            bg={"#E6B884"}
+            bg={"orange.200"}
             rounded={"xl"}
-            padding={"4"}
-            boxShadow={"0px 4px 2px lightgray"}
+            padding={"3"}
+            color={"orange.950"}
+            display={"grid"}
+            gridTemplateRows={"fit-content(100%) 1fr"}
             {...other}
         >
-            {children}
+            <Heading h={"fit-content"} marginBottom={"1"}>{title}</Heading>
+            <Box w={"100%"} h={"100%"}
+                 bgColor={"orange.50"}
+                 rounded={"xl"}
+                 shadow={"md"}
+                 // boxShadow={"0px 3px 4px lightgray"}
+            >
+                {children}
+            </Box>
         </Box>
     );
 }

@@ -5,9 +5,10 @@ import TaskArea from "./components/TaskArea";
 import NewsArea from "./components/NewsArea";
 import LogArea from "./components/LogArea";
 
+
 function App(): React.ReactElement {
   return (
-      <Box bg={"#FFF4E9"} w={"100%"} h={"100vh"}>
+      <Box bg={"orange.50"} w={"100%"} h={"100vh"}>
           <SideBar>
               <Grid
                   h="100%"

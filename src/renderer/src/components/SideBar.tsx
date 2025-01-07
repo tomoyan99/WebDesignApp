@@ -129,6 +129,7 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                         width: drawerWidth,
                         boxSizing: 'border-box',
                         backgroundColor: "transparent",
+                        color:"#220a04"
                     },
                 }}
                 variant="persistent"
@@ -144,6 +145,7 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
+                {/*コマンドエリア*/}
                 <List>
                     <For
                         each={[
@@ -166,13 +168,14 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                     </For>
                 </List>
                 <Divider />
+                {/*ベストバウトエリア*/}
                 <Box width={"100%"} height={"100%"} padding={2.5}>
                     <BestBoutArea/>
                 </Box>
             </Drawer>
-            <Main open={open}>
+            <Main open={open} sx={{display: 'grid',gridTemplateRows:"fit-content(100%) 1fr"}}>
                 <Toolbar variant="dense" sx={{minHeight: '36px',height:"36px"}}/>
-                <Box height={"93%"} width={"100%"}>
+                <Box height={"100%"} width={"100%"}>
                     {children}
                 </Box>
             </Main>
