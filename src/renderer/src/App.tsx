@@ -1,8 +1,6 @@
 import React from "react";
 import {Box,Grid, GridItem,Text} from "@chakra-ui/react"
-// import {MyDrawer} from "./components/MyDrawer";
 import SideBar from "./components/SideBar";
-import Typography from "@mui/material/Typography";
 // import SideBar from "./components/SideBar2";
 
 function App(): React.ReactElement {
