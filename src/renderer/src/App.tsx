@@ -1,7 +1,6 @@
 import React from "react";
-import {Box,Grid, GridItem,Text} from "@chakra-ui/react"
+import {Grid, GridItem,Text} from "@chakra-ui/react"
 import SideBar from "./components/SideBar";
-// import SideBar from "./components/SideBar2";
 
 function App(): React.ReactElement {
   return (
