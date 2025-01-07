@@ -5,6 +5,10 @@ React+Electron+Viteのボイラープレートです
 ### モジュールのインストール
 
 ```bash
+$ npm install -g yarn
+```
+
+```bash
 $ yarn
 ```
 
