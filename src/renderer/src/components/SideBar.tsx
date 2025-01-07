@@ -16,8 +16,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import BestBoutArea from "./BestBoutArea";
+import {For} from "@chakra-ui/react";
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
 const drawerWidth = 280;
 
@@ -27,9 +31,7 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-    open?: boolean;
-}>(({ theme }) => ({
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' }) <{ open?: boolean; }>(({ theme }) => ({
     flexGrow: 1,
     padding: `${theme.spacing(2)} ${theme.spacing(3)}`,
     height: '100vh',
@@ -52,9 +54,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
     ],
 }));
 
+
+
+
+
 const AppBar = styled(MuiAppBar,{shouldForwardProp: (prop) => prop !== 'open'})
     <AppBarProps>(({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: "transparent",
         color:"#000000",
         boxShadow:"none",
         transition: theme.transitions.create(['margin', 'width'], {
@@ -84,9 +90,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'space-between',
 }));
 
-export default function SideBar({children}:{children?:React.ReactNode}) {
+export default function SideBarFrame({children}:{children:React.ReactNode}) {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -97,7 +103,7 @@ export default function SideBar({children}:{children?:React.ReactNode}) {
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex'}}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
                 <Toolbar variant="dense">
@@ -122,6 +128,7 @@ export default function SideBar({children}:{children?:React.ReactNode}) {
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
                         boxSizing: 'border-box',
+                        backgroundColor: "transparent",
                     },
                 }}
                 variant="persistent"
@@ -130,7 +137,7 @@ export default function SideBar({children}:{children?:React.ReactNode}) {
             >
                 <DrawerHeader>
                     <Typography variant="h5" width={"100%"} paddingLeft={"1em"}>
-                        Header
+                        アプリ名？
                     </Typography>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -138,33 +145,33 @@ export default function SideBar({children}:{children?:React.ReactNode}) {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    <For
+                        each={[
+                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/> },
+                            { name: "記録", icon:<EditNoteIcon/>  },
+                            { name: "つぶやき", icon:<ChatBubbleIcon/>  },
+                            { name: "タスクを追加", icon:<AddTaskIcon/>  },
+                        ]}
+                    >
+                        {(item) => (
+                            <ListItem key={item.name} disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.name} />
+                                </ListItemButton>
+                            </ListItem>
+                        )}
+                    </For>
                 </List>
                 <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
+                <Box width={"100%"} height={"100%"} padding={2.5}>
+                    <BestBoutArea/>
+                </Box>
             </Drawer>
             <Main open={open}>
-                <Toolbar variant="dense"/>
+                <Toolbar variant="dense" sx={{minHeight: '36px',height:"36px"}}/>
                 <Box height={"93%"} width={"100%"}>
                     {children}
                 </Box>
