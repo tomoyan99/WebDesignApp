@@ -3,12 +3,12 @@ import {Area,AreaHeader,AreaBody} from "./Area";
 
 export default function BestBoutArea({data}:{data:string[]}) {
     return(
-        <Area h={"60%"}>
+        <Area h={"fit-content"}>
             <AreaHeader>Best Days</AreaHeader>
-            <AreaBody padding={"5"} overflowY={"auto"}>
-                <List.Root as={"ol"} fontSize={"2xl"} >
+            <AreaBody padding={"5"}>
+                <List.Root as={"ol"} fontSize={"2xl"}  justifyContent="space-between" gap={5}>
                     <For each={data}>
-                        {(item)=><List.Item>{item}</List.Item>}
+                        {(item,index)=><List.Item key={`BestBoutArea_List${index}`}>{item}</List.Item>}
                     </For>
                 </List.Root>
             </AreaBody>

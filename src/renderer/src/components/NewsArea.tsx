@@ -1,10 +1,13 @@
 import {Area,AreaHeader,AreaBody} from "./Area";
+import {Speech} from "./Speech";
 
 export default function NewsArea(){
     return(
         <Area>
             <AreaHeader>ニュース</AreaHeader>
-            <AreaBody></AreaBody>
+            <AreaBody>
+                <Speech/>
+            </AreaBody>
         </Area>
     );
 }

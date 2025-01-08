@@ -7,12 +7,10 @@ export default function TaskArea(){
         <Area>
             <AreaHeader>タスク</AreaHeader>
             <HStack
-                w={"full"}
-                h={"100%"}
                 gap="4"
-                paddingLeft="2"
-                paddingRight="2"
+                padding="4"
                 overflowX="auto"
+                overflowY="hidden"
             >
                 <For each={[
                     <Task date={"10月22日"} content={"勉強"}/>,
@@ -23,7 +21,7 @@ export default function TaskArea(){
                     <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
                     <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
                 ]}>
-                    {(item)=>{
+                    {(item,index)=>{
                         return (
                             <AreaBody
                                 w={"fit-content"}
@@ -31,8 +29,8 @@ export default function TaskArea(){
                                 rounded={"md"}
                                 flexShrink={0}
                                 transition={"0.3s"}
+                                key={`TaskArea_Task${index}`}
                                 _hover={{
-                                    // bg: 'orange.300',
                                     scale:"1.1"
                                 }}
                             >
@@ -66,7 +64,7 @@ function Task(data:TaskProps){
             bg={"transparent"}
             color={"orange.950"}
             fontWeight={"bold"}
-            fontSize={"1.1em"}
+            fontSize={"xl"}
             _active={{
                 bg:"orange.400",
             }}

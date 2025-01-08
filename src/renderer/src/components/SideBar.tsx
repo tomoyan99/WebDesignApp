@@ -22,6 +22,7 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import { useWindowSize } from '../hooks/useWindowSize';
 
 const drawerWidth = 280;
 
@@ -93,6 +94,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function SideBarFrame({children}:{children:React.ReactNode}) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const {windowHeight} = useWindowSize();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -178,7 +180,7 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
             </Drawer>
             <Main open={open} sx={{display: 'grid',gridTemplateRows:"fit-content(100%) 1fr"}}>
                 <Toolbar variant="dense" sx={{minHeight: '36px',height:"36px"}}/>
-                <Box height={"100%"} width={"100%"}>
+                <Box height={`${windowHeight-64}px`} width={"100%"}>
                     {children}
                 </Box>
             </Main>
