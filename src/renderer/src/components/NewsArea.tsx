@@ -5,7 +5,7 @@ export default function NewsArea(){
     return(
         <Area>
             <AreaHeader>ニュース</AreaHeader>
-            <AreaBody>
+            <AreaBody bg={"transparent"}>
                 <Speech/>
             </AreaBody>
         </Area>

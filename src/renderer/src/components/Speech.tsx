@@ -1,7 +1,7 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import todo from '../assets/todo.png';
 
-export function Speech() {
+export function Speech({children}:{children:string}) {
     return (
         <Flex
             alignItems="center"
@@ -32,7 +32,7 @@ export function Speech() {
                     borderColor: "transparent #f9f9f9 transparent transparent",
                 }}
             >
-                <Text>「こんな日は外でBBQ」</Text>
+                <Text>{children}</Text>
             </Box>
         </Flex>
     );
