@@ -161,7 +161,10 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                                     <ListItemIcon>
                                         {item.icon}
                                     </ListItemIcon>
-                                    <ListItemText primary={item.name} />
+                                    <ListItemText
+                                        disableTypography
+                                        primary={<Typography fontSize={"1.1em"} sx={{transform:"rotate(0.05deg)"}}>{item.name}</Typography>}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         )}
@@ -169,8 +172,8 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 </List>
                 <Divider />
                 {/*ベストバウトエリア*/}
-                <Box width={"100%"} height={"100%"} padding={2.5}>
-                    <BestBoutArea/>
+                <Box width={"100%"} height={"100%"} padding={2.5} display={"flex"} alignItems={"flex-end"}>
+                    <BestBoutArea data={["1月8日","2月20日","3月10日"]}/>
                 </Box>
             </Drawer>
             <Main open={open} sx={{display: 'grid',gridTemplateRows:"fit-content(100%) 1fr"}}>

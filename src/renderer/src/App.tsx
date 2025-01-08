@@ -4,6 +4,7 @@ import SideBar from "./components/SideBar";
 import TaskArea from "./components/TaskArea";
 import NewsArea from "./components/NewsArea";
 import LogArea from "./components/LogArea";
+import "./style/scroll.css";
 
 
 function App(): React.ReactElement {

@@ -1,0 +1,29 @@
+/* スクロールバー全体のデザイン */
+::-webkit-scrollbar {
+    width: 12px; /* 横スクロールバーの高さもここで指定される */
+    height: 12px; /* 必要に応じて高さも設定 */
+}
+
+/* スクロールバーのトラック（背景部分） */
+::-webkit-scrollbar-track {
+    background: #f4f4f4;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+}
+
+/* スクロールバーのつまみ部分 */
+::-webkit-scrollbar-thumb {
+    background: #b87b3e;
+    border-radius: 6px;
+    border: 2px solid #f4f4f4;
+}
+
+/* スクロールバーのつまみ部分（ホバー時） */
+::-webkit-scrollbar-thumb:hover {
+    background: #8a5a32;
+}
+
+/* スクロールバーの角（四隅） */
+::-webkit-scrollbar-corner {
+    background: #f4f4f4;
+}

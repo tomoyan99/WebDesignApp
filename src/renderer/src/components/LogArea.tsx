@@ -1,8 +1,10 @@
-import Area from "./Area";
+import {Area,AreaHeader,AreaBody} from "./Area";
 
 export default function LogArea(){
     return(
-        <Area title={"りれき"}>
+        <Area>
+            <AreaHeader>りれき</AreaHeader>
+            <AreaBody></AreaBody>
         </Area>
     );
 }
