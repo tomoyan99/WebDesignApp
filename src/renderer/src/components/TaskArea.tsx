@@ -31,6 +31,7 @@ export default function TaskArea(){
                                 transition={"0.3s"}
                                 key={`TaskArea_Task${index}`}
                                 _hover={{
+                                    bg:"orange.50/80",
                                     scale:"1.1"
                                 }}
                             >
