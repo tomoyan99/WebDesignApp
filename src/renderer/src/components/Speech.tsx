@@ -1,23 +1,19 @@
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import todo from '../assets/todo.png';
+import {Avatar} from "../ui/avatar";
 
 export function Speech({children}:{children:string}) {
     return (
         <Flex
             alignItems="center"
-            gap="10px"
+            gap={5}
         >
-            <Image
-                src={todo}
-                alt="トド"
-                boxSize="80px"
-            />
+            <Avatar size={"lg"} name="Todorin" src={todo} overflow={"clip"} overflowClipMargin={"content-box"} />
             <Box
                 position="relative"
                 bg="#f9f9f9"
                 p="10px 15px"
-                borderRadius="15px"
-                maxWidth="600px"
+                rounded={"lg"}
                 lineHeight="1.4"
                 _before={{
                     content: '""',

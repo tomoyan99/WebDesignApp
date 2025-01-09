@@ -2,21 +2,30 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import {Provider} from "./ui/provider"
-import {} from "@chakra-ui/react"
-import "@fontsource/dela-gothic-one"
-import "@fontsource/m-plus-rounded-1c"
+import '@fontsource/zen-maru-gothic';
 import {createTheme,ThemeProvider} from "@mui/material";
+import {createSystem, defaultConfig} from "@chakra-ui/react";
 
 const theme = createTheme({
     typography:{
-        fontFamily:"'M PLUS Rounded 1c',system-ui",
+        fontFamily:"'Zen Maru Gothic',system-ui",
     }
 });
+const system = createSystem(defaultConfig, {
+    theme: {
+        tokens: {
+            fonts: {
+                heading: { value: "'Zen Maru Gothic',system-ui" },
+                body: { value: "'Zen Maru Gothic',system-ui" },
+            },
+        },
+    },
+})
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
-            <Provider >
+            <Provider system={system}>
                 <App/>
             </Provider>
         </ThemeProvider>

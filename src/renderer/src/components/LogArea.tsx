@@ -9,7 +9,7 @@ export default function LogArea(){
             <AreaHeader>りれき</AreaHeader>
             <VStack overflowY={"auto"} gap={3}>
                 <For each={[1,2,3,4]}>
-                    {(item, index)=>(
+                    {(_item, index)=>(
                         <AreaBody
                             key={`LogArea_TimeLine_${index}`}
                             p={4}

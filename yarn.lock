@@ -750,6 +750,11 @@
   resolved "https://registry.npmjs.org/@fontsource/m-plus-rounded-1c/-/m-plus-rounded-1c-5.1.1.tgz"
   integrity sha512-Ava2L0GaotXuRIRHwB0IZCh13ytnBx9Ww2YJvVFl5GSmevlkQQwW4yh8hLLBkfDCFTAxrYpaDrEJ4oOotP/0uQ==
 
+"@fontsource/zen-maru-gothic@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@fontsource/zen-maru-gothic/-/zen-maru-gothic-5.1.1.tgz#d12bf55a99e6a04b770ed02e2b03ba94689b7b02"
+  integrity sha512-6Jughfj4x0B+Y0SlzYSOouNsZnsdEFOK/i9oya2ar8j665XInm21kFwQ3y8SQb7avN/oiGZ+REBJf+dpuO3dGA==
+
 "@internationalized/date@3.6.0":
   version "3.6.0"
   resolved "https://registry.npmjs.org/@internationalized/date/-/date-3.6.0.tgz"
