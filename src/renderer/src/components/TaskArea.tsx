@@ -1,6 +1,7 @@
 import {Area,AreaHeader,AreaBody} from "./Area";
 import {Button} from "../ui/button";
 import {For, HStack, Text, VStack} from "@chakra-ui/react";
+import {StopWatch} from "./Dialogs/StopWatch";
 
 export default function TaskArea(){
     return(
@@ -13,13 +14,7 @@ export default function TaskArea(){
                 overflowY="hidden"
             >
                 <For each={[
-                    <Task date={"10月22日"} content={"勉強"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
-                    <Task date={"12月22日"} content={"アバダケダブラと唱えてみる"}/>,
+                    {date:"10月22日",content:"食べる"}
                 ]}>
                     {(item,index)=>{
                         return (
@@ -35,7 +30,9 @@ export default function TaskArea(){
                                     scale:"1.1"
                                 }}
                             >
-                                {item}
+                                <StopWatch task={item.content}>
+                                    <Task date={item.date} content={item.content}/>
+                                </StopWatch>
                             </AreaBody>
                         );
                     }}
@@ -54,26 +51,30 @@ type TaskProps = {
 
 function Task(data:TaskProps){
     return (
-        <Button
-            height={"fit-content"}
-            display={"grid"}
-            alignItems={"center"}
-            textAlign={"center"}
-            padding={"3"}
-            rounded={"inherit"}
-            colorPalette={"orange"}
-            bg={"transparent"}
-            color={"orange.950"}
-            fontWeight={"bold"}
-            fontSize={"xl"}
-            _active={{
-                bg:"orange.400",
-            }}
-        >
-            <VStack gap={"4"}>
-                <Text>{data.date}</Text>
-                <Text>{data.content}</Text>
-            </VStack>
-        </Button>
+        <>
+            <Button
+                height={"fit-content"}
+                display={"grid"}
+                alignItems={"center"}
+                textAlign={"center"}
+                p={"3"}
+                pl={"5"}
+                pr={"5"}
+                rounded={"inherit"}
+                colorPalette={"orange"}
+                bg={"transparent"}
+                color={"orange.950"}
+                fontWeight={"bold"}
+                fontSize={"xl"}
+                _active={{
+                    bg:"orange.400",
+                }}
+            >
+                <VStack gap={"4"}>
+                    <Text>{data.date}</Text>
+                    <Text>{data.content}</Text>
+                </VStack>
+            </Button>
+        </>
     );
 }

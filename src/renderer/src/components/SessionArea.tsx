@@ -1,0 +1,200 @@
+import {Area,AreaHeader,AreaBody} from "./Area";
+import {TimelineConnector, TimelineContent, TimelineDescription, TimelineItem, TimelineRoot, TimelineTitle} from "../ui/timeline"
+import { FaRegPenToSquare } from "react-icons/fa6";
+import { LuPlay,LuPause } from "react-icons/lu";
+import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
+import DateField from "./DateField";
+import {Avatar} from "../ui/avatar";
+import ElapsedTime from "./ElapsedTime";
+import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../ui/accordion";
+import React from "react";
+import {EmptyState} from "../ui/empty-state";
+import { TbMoodEmpty } from "react-icons/tb";
+
+// 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
+
+// Replyの情報
+type ReplyInfo = {
+    avatar   :string,
+    name     :string,
+    id       :string,
+    message  :string,
+    date_unix:number,
+    date_iso :string,
+}
+
+export type Sessions = {
+    start_unix :number,
+    stop_unix  :number,
+    start_iso  :string,
+    stop_iso   :string,
+    topics:{date_unix:number,date_iso:string,topic:string,reply?:ReplyInfo}[]
+};
+
+
+export default function SessionArea({sessions}:{sessions:Sessions[]}){
+    return(
+        <Area>
+            <AreaHeader>りれき</AreaHeader>
+            {sessions.length>0
+                ? <VStack overflowY={"auto"} gap={3}>
+                    <For each={sessions}>
+                        {(item, index)=>(
+                            <AreaBody
+                                key={`LogArea_TimeLine_${index}`}
+                                p={4}
+                                h={"fit-content"}
+                            >
+                                <TimelineRoot  size={"lg"} maxW="400px">
+                                    <TimeLineStart date={item.start_unix}/>
+                                    <For each={item.topics}>
+                                        {(item2, index2)=>(
+                                            <TimeLineTopic
+                                                key={`Topic_${item.start_unix}-${item.stop_unix}_${index2}`}
+                                                date={item2.date_unix}
+                                                topic={item2.topic}
+                                                reply={item2.reply}
+                                            />
+                                        )}
+                                    </For>
+                                    <TimeLineStop date={item.stop_unix} elapsed={item.stop_unix - item.start_unix}/>
+                                </TimelineRoot>
+                            </AreaBody>
+                        )}
+                    </For>
+                </VStack>
+                : <AreaBody>
+                    <EmptyState
+                        icon={<TbMoodEmpty />}
+                        title="履歴がないよ～"
+                        size={"lg"}
+                    >
+                        <Text textStyle={"lg"} whiteSpace={"pre-wrap"} textAlign={"center"}>
+                            {"サイドバーのストップウォッチから\nタスクを始めてね！"}
+                        </Text>
+                    </EmptyState>
+                </AreaBody>
+            }
+        </Area>
+    );
+}
+
+function TimeLineStart(props:{date:number}){
+    return(
+        <TimelineItem>
+            <TimelineConnector bg="teal.solid" color="teal.contrast" fontSize={"md"}>
+                <LuPlay/>
+            </TimelineConnector>
+            <TimelineContent>
+                <TimelineTitle textStyle={"sm"}>タスクかいし！</TimelineTitle>
+                <TimelineDescription letterSpacing={"wide"}>
+                    <DateField value={props.date}/>
+                </TimelineDescription>
+            </TimelineContent>
+        </TimelineItem>
+    );
+}
+function TimeLineStop(props:{date:number,elapsed:number}){
+    return (
+        <TimelineItem>
+            <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
+                <LuPause/>
+            </TimelineConnector>
+            <TimelineContent>
+                <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
+                <Text textStyle={"sm"} color={"fg.muted"}>経過時間：<ElapsedTime timestamp={props.elapsed}/></Text>
+                <TimelineDescription letterSpacing={"wide"}>
+                    <DateField value={props.date}/>
+                </TimelineDescription>
+            </TimelineContent>
+        </TimelineItem>
+    );
+}
+
+function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
+    return (
+        <TimelineItem>
+            <TimelineConnector bg="blue.solid" color="blue.contrast">
+                <FaRegPenToSquare/>
+            </TimelineConnector>
+            <TimelineContent>
+                <TopicCard
+                    message={props.topic}
+                    date={props.date}
+                    textStyle={"md"}
+                    rounded={"md"}
+                    borderWidth={1}
+                    borderColor={"gray.200"}
+                />
+                {props.reply?(<ReplyAccordion {...props.reply}/>):(<></>)}
+            </TimelineContent>
+        </TimelineItem>
+    );
+}
+
+function ReplyAccordion(props:ReplyInfo){
+    const [open, setOpen] = React.useState(false);
+
+    return (
+        <AccordionRoot
+            collapsible
+            default
+            bg={"white"}
+            borderWidth={1}
+            borderColor={"gray.light"}
+            variant={"plain"}
+            rounded={"md"}
+            onValueChange={()=>setOpen(!open)}
+            open={open}
+        >
+            <AccordionItem>
+                <AccordionItemTrigger
+                    pl={4}
+                    pr={4}
+                >
+                    {open
+                        ? (<>
+                            <HStack gap={4} pt={1} pb={0}>
+                                <Avatar
+                                    src={props.avatar}
+                                    name={props.name}
+                                    size="lg"
+                                    shape="rounded"
+                                    bg={"transparent"}
+                                />
+                                <VStack gap={0}>
+                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.name}</Text>
+                                    <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.id}</Text>
+                                </VStack>
+                            </HStack>
+                        </>)
+                        : (<><Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text></>)}
+                </AccordionItemTrigger>
+                <AccordionItemContent pt={1} pb={1}>
+                    <TopicCard
+                        message={props.message}
+                        date={props.date_unix}
+                        pt={0}
+                        pb={4}
+                    />
+                </AccordionItemContent>
+            </AccordionItem>
+        </AccordionRoot>
+    )
+}
+
+function TopicCard(props:CardBodyProps&{message:string,date:number}) {
+    const {message,date,color,...other} = props;
+    return (
+        <Card.Root width="100%" borderWidth={0}>
+            <Card.Body gap={3} {...other}>
+                <Card.Description whiteSpace={"pre-wrap"} textStyle={props?.textStyle}>
+                    {message}
+                </Card.Description>
+                <TimelineDescription letterSpacing={"wide"} color={"gray.400"}>
+                    <DateField value={date}/>
+                </TimelineDescription>
+            </Card.Body>
+        </Card.Root>
+    );
+}

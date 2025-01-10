@@ -1,5 +1,4 @@
 import {
-    DialogActionTrigger,
     DialogBody, DialogCloseTrigger,
     DialogContent,
     DialogFooter,
@@ -8,19 +7,18 @@ import {
     DialogTitle,
     DialogTrigger
 } from "../ui/dialog";
-import {Button} from "../ui/button";
 import {
     DialogBodyProps,
     DialogContentProps, DialogFooterProps,
     DialogHeaderProps,
     DialogRootProps,
-    HTMLChakraProps
+    HTMLChakraProps,
 } from "@chakra-ui/react";
 import React from "react";
 
-namespace Tweet {
+namespace MyDialog {
 
-    export function TweetRoot(props:DialogRootProps) {
+    export function Root(props:DialogRootProps) {
         const {children,...other} = props;
 
         return(
@@ -43,7 +41,12 @@ namespace Tweet {
         return(
             <DialogContent {...other}>
                 {children}
-                <DialogCloseTrigger />
+                <DialogCloseTrigger
+                    size={"xl"}
+                    _hover={{
+                        bg:"blackAlpha.200"
+                    }}
+                />
             </DialogContent>
         )
     }
@@ -51,8 +54,8 @@ namespace Tweet {
     export function Header(props:DialogHeaderProps&HTMLChakraProps<"div">) {
         const {children, ...other} = props;
         return(
-            <DialogHeader {...other}>
-                <DialogTitle>{children}</DialogTitle>
+            <DialogHeader>
+                <DialogTitle {...other}>{children}</DialogTitle>
             </DialogHeader>
         )
     }
@@ -69,13 +72,10 @@ namespace Tweet {
         const {children, ...other} = props;
         return(
             <DialogFooter {...other}>
-                <DialogActionTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
-                </DialogActionTrigger>
-                <Button>Save</Button>
+                {children}
             </DialogFooter>
         );
     }
 }
 
-export default Tweet;
+export default MyDialog;

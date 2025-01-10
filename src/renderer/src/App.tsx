@@ -3,9 +3,10 @@ import {Box, Grid, GridItem} from "@chakra-ui/react"
 import SideBar from "./components/SideBar";
 import TaskArea from "./components/TaskArea";
 import NewsArea from "./components/NewsArea";
-import LogArea from "./components/LogArea";
+import SessionArea from "./components/SessionArea";
 import "./style/scroll.css";
 import {useWindowSize} from "./hooks/useWindowSize";
+import {test_sessions} from "./testData";
 
 
 function App(): React.ReactElement {
@@ -24,7 +25,7 @@ function App(): React.ReactElement {
                         <TaskArea/>
                     </GridItem>
                     <GridItem rowSpan={3} colSpan={2}>
-                        <LogArea/>
+                        <SessionArea sessions={test_sessions}/>
                     </GridItem>
                     <GridItem rowSpan={3} colSpan={2}>
                         <NewsArea/>

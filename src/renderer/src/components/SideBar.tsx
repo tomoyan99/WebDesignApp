@@ -11,10 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import BestBoutArea from "./BestBoutArea";
 import {For, Text} from "@chakra-ui/react";
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
@@ -22,7 +18,14 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { useWindowSize } from '../hooks/useWindowSize';
-import Tweet from "./Tweet";
+import {Tweet} from "./Dialogs/Tweet";
+import {StopWatch} from "./Dialogs/StopWatch";
+import {AddLog} from "./Dialogs/AddLog";
+import {AddTask} from "./Dialogs/AddTask";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
 const drawerWidth = 280;
 
@@ -147,43 +150,42 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 <List>
                     <For
                         each={[
-                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/>},
-                            { name: "記録", icon:<EditNoteIcon/>  },
-                            { name: "つぶやき", icon:<ChatBubbleIcon/>  },
-                            { name: "タスクを追加", icon:<AddTaskIcon/>  },
+                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/>,dialog:"stopwatch"},
+                            { name: "記録", icon:<EditNoteIcon/>,dialog:"log"},
+                            { name: "つぶやき", icon:<ChatBubbleIcon/>,dialog:"tweet"},
+                            { name: "タスクを追加", icon:<AddTaskIcon/>,dialog:"task"},
                         ]}
                     >
-                        {(item,index) => (
-                            <Tweet.TweetRoot key={`Tweet_${index}`}>
-                                <Tweet.Trigger>
-                                    <ListItem key={item.name} disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                {item.icon}
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                disableTypography
-                                                primary={<Text fontSize={"1.1em"}>{item.name}</Text>}
-                                            />
-                                        </ListItemButton>
-                                    </ListItem>
-                                </Tweet.Trigger>
-                                <Tweet.Content>
-                                    <Tweet.Header>
-                                        だいあろぐ
-                                    </Tweet.Header>
-                                    <Tweet.Body>
-                                        <Text>
-                                            ここにはダイアログのいろんな内容が
-                                            いっぱい入るよ
-                                        </Text>
-                                    </Tweet.Body>
-                                    <Tweet.Footer>
-
-                                    </Tweet.Footer>
-                                </Tweet.Content>
-                            </Tweet.TweetRoot>
-                        )}
+                        {(item) =>{
+                            switch (item.dialog) {
+                                case "stopwatch":
+                                    return (
+                                        <StopWatch key={"StopWatch_List"}>
+                                            <ListButton name={item.name} icon={item.icon}/>
+                                        </StopWatch>
+                                    );
+                                case "log":
+                                    return (
+                                        <AddLog key={"AddLog_List"}>
+                                            <ListButton name={item.name} icon={item.icon}/>
+                                        </AddLog>
+                                    );
+                                case "task":
+                                    return (
+                                        <AddTask key={"AddTask_List"}>
+                                            <ListButton name={item.name} icon={item.icon}/>
+                                        </AddTask>
+                                    );
+                                case "tweet":
+                                    return (
+                                        <Tweet key={"AddTweet_List"}>
+                                            <ListButton name={item.name} icon={item.icon}/>
+                                        </Tweet>
+                                    );
+                                default:
+                                    return (<></>);
+                            }
+                        }}
                     </For>
                 </List>
                 <Divider />
@@ -199,5 +201,21 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 </Box>
             </Main>
         </Box>
+    );
+}
+
+function ListButton(props:{name:string,icon:React.ReactElement}) {
+    return (
+        <ListItem disablePadding>
+            <ListItemButton>
+                <ListItemIcon>
+                    {props.icon}
+                </ListItemIcon>
+                <ListItemText
+                    disableTypography
+                    primary={<Text fontSize={"1.1em"}>{props.name}</Text>}
+                />
+            </ListItemButton>
+        </ListItem>
     );
 }
