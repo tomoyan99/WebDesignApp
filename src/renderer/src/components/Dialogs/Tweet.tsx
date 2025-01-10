@@ -53,7 +53,7 @@ export function Tweet(props:{children?:React.ReactNode}) {
                         minHeight={250}
                         resize={"none"}
                         fontWeight={"500"}
-                        letterSpacing={-2}
+                        letterSpacing={0.1}
                         placeholder={"いまどうしてる？"}
                         ref={ref}
                     />

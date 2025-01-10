@@ -6,14 +6,16 @@ import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
 import {useWindowSize} from "./hooks/useWindowSize";
-import {test_sessions, test_tasks} from "./testData";
+import {test_news, test_sessions, test_tasks} from "./testData";
 
 
 function App(): React.ReactElement {
     const {windowWidth,windowHeight} = useWindowSize();
     console.log(windowWidth,windowHeight);
     return (
-        <Box bg={"orange.50"} w={"100%"} h={"100vh"}>
+        <Box bg={"orange.50"} w={"100%"} h={"100vh"}
+            colorPalette={"orange"}
+        >
             <SideBar>
                 <Grid
                     h="100%"
@@ -30,7 +32,7 @@ function App(): React.ReactElement {
                         <SessionArea sessions={test_sessions}/>
                     </GridItem>
                     <GridItem  colSpan={2}>
-                        <NewsArea/>
+                        <NewsArea　news={test_news} />
                     </GridItem>
                 </Grid>
             </SideBar>

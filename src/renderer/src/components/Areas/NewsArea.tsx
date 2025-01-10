@@ -1,30 +1,44 @@
-import {Area,AreaHeader} from "../Area";
+import {Area, AreaBody, AreaHeader} from "../Area";
 import {Speech} from "../Speech";
 import {For, VStack} from "@chakra-ui/react";
+import { TbMoodSadSquint } from "react-icons/tb";
+import {EmptyState} from "../../ui/empty-state";
 
-export default function NewsArea(){
+export default function NewsArea({news}:{news:string[]}) {
     return(
         <Area>
             <AreaHeader>ニュース</AreaHeader>
-            <VStack
-                p={4}
-                w={"full"}
-                bg={"transparent"}
-                overflowY={"auto"}
-                alignItems={"left"}
-                gap={4}
-            >
-                <For each={[
-                    "チャイティーがミルクティーの一種だったことを知らずに注文しむせた",
-                ]}>
-                    {(item, index)=>(
-                        <Speech key={`Speech_${index}`}>
-                            {`「${item}」`}
-                        </Speech>
-                    )}
-                </For>
+            {news.length > 0
+                ? (
+                    <VStack
+                        p={4}
+                        w={"full"}
+                        bg={"transparent"}
+                        overflowY={"auto"}
+                        alignItems={"left"}
+                        gap={4}
+                    >
+                        <For each={news}>
+                            {(item, index)=>(
+                                <Speech key={`Speech_${index}`}>
+                                    {`「${item}」`}
+                                </Speech>
+                            )}
+                        </For>
 
-            </VStack>
+                    </VStack>
+                )
+                : (
+                    <AreaBody>
+                        <EmptyState
+                            icon={<TbMoodSadSquint/>}
+                            title={"ニュースがないよ～"}
+                            color={"orange.900"}
+                            size={"lg"}
+                        />
+                    </AreaBody>
+                )
+            }
         </Area>
     );
 }

@@ -9,7 +9,7 @@ import calclElapsedTime from "../../util/calclElapsedTime";
 import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
 import React from "react";
 import {EmptyState} from "../../ui/empty-state";
-import { TbMoodEmpty } from "react-icons/tb";
+import { TbMoodSadSquint } from "react-icons/tb";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
@@ -63,7 +63,11 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                                             />
                                         )}
                                     </For>
-                                    <TimeLineStop date={item.stop_unix} elapsed={item.stop_unix - item.start_unix}/>
+                                    <TimeLineStop
+                                        date={item.stop_unix}
+                                        start={item.start_unix}
+                                        stop={item.stop_unix}
+                                    />
                                 </TimelineRoot>
                             </AreaBody>
                         )}
@@ -71,7 +75,7 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                 </VStack>
                 : <AreaBody>
                     <EmptyState
-                        icon={<TbMoodEmpty />}
+                        icon={<TbMoodSadSquint />}
                         title="履歴がないよ～"
                         size={"lg"}
                     >
@@ -100,7 +104,7 @@ function TimeLineStart(props:{date:number}){
         </TimelineItem>
     );
 }
-function TimeLineStop(props:{date:number,elapsed:number}){
+function TimeLineStop(props:{date:number,start:number,stop:number}){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
@@ -108,7 +112,7 @@ function TimeLineStop(props:{date:number,elapsed:number}){
             </TimelineConnector>
             <TimelineContent>
                 <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
-                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calclElapsedTime(props.date)}`}</Text>
+                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calclElapsedTime(props.start,props.stop)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date)}
                 </TimelineDescription>

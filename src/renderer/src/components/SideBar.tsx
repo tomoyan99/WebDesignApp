@@ -8,12 +8,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BestBoutArea from "./Areas/BestBoutArea";
-import {For, HTMLChakraProps, Text,Box,IconButton} from "@chakra-ui/react";
-import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import {For, HTMLChakraProps, Text, Box, IconButton, VStack, IconButtonProps} from "@chakra-ui/react";
+
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import { useWindowSize } from '../hooks/useWindowSize';
+// import { useWindowSize } from '../hooks/useWindowSize';
 import {Tweet} from "./Dialogs/Tweet";
 import {StopWatch} from "./Dialogs/StopWatch";
 import {AddLog} from "./Dialogs/AddLog";
@@ -58,7 +59,7 @@ interface AppBarProps extends HTMLChakraProps<"div">{
     drawerWidth: number;
 }
 
-const AppBar: React.FC<AppBarProps> = ({ open = false, drawerWidth, children }) => {
+const AppBar: React.FC<AppBarProps&{isVisible:boolean}> = ({ open = false, drawerWidth, children,isVisible=false }) => {
     const theme = useTheme();
 
     // 動的にスタイルを決定
@@ -73,14 +74,15 @@ const AppBar: React.FC<AppBarProps> = ({ open = false, drawerWidth, children }) 
             bg="transparent"
             color="#000000"
             boxShadow="none"
-            transition={`margin ${transition}, width ${transition}`}
-            width={"fit-content"}
+            transition={transition}
+            width={"55px"}
             minHeight="100vh"
             height="100vh"
             marginLeft={marginLeft}
-            display={open ? 'none' :'block'}
+            display={!open?"flex":"none"}
+            justifyContent="flex-end"
         >
-            {children}
+            { isVisible?children:<></>}
         </Box>
     );
 };
@@ -97,7 +99,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function SideBarFrame({children}:{children:React.ReactNode}) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
-    const {windowHeight} = useWindowSize();
+    const [isAppBarVisible, setIsAppBarVisible] = React.useState(false);
+    // const {windowHeight} = useWindowSize();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -107,26 +110,73 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
         setOpen(false);
     };
 
+    React.useEffect(() => {
+        // Drawerのopen/closeとAppBarの表示をずらす
+        if (open) {
+            setIsAppBarVisible(false);
+            return ()=>{};
+        } else {
+            const timer = setTimeout(() => {
+                setIsAppBarVisible(true);
+            },200);
+            return () => clearTimeout(timer); // クリーンアップ
+        }
+    },[open]);
+    const sideBarIconButtonStyle :IconButtonProps ={
+        size:"xl",
+        textStyle:"xl",
+        color:"orange.900",
+        bg:{
+            base: "transparent",
+            _hover:"blackAlpha.200"
+        }
+    }
+
     return (
         <Box display={"flex"}>
             <CssBaseline />
-            <AppBar open={open} drawerWidth={drawerWidth}>
-                <Box>
+            <AppBar open={open} isVisible={isAppBarVisible} drawerWidth={drawerWidth}>
+                <VStack>
                     <IconButton
-                        size={"xl"}
-                        color="inherit"
-                        bg={{
-                            base: "transparent",
-                            _hover:"blackAlpha.200"
-                        }}
-                        textStyle={"xl"}
+                        {...sideBarIconButtonStyle}
                         onClick={handleDrawerOpen}
                         display={open?'none':"block"}
                         variant={"subtle"}
                     >
                         <MenuIcon />
                     </IconButton>
-                </Box>
+
+                    <Divider />
+
+                    {/*サイドバー*/}
+                    {/*ストップウォッチ*/}
+                    <StopWatch>
+                        <IconButton {...sideBarIconButtonStyle}>
+                            <TimerOutlinedIcon/>
+                        </IconButton>
+                    </StopWatch>
+
+                    {/*記録*/}
+                    <AddLog>
+                        <IconButton {...sideBarIconButtonStyle}>
+                            <EditNoteIcon/>
+                        </IconButton>
+                    </AddLog>
+
+                    {/*タスクの追加*/}
+                    <AddTask>
+                        <IconButton {...sideBarIconButtonStyle}>
+                            <ChatBubbleIcon/>
+                        </IconButton>
+                    </AddTask>
+
+                    {/*つぶやき*/}
+                    <Tweet>
+                        <IconButton {...sideBarIconButtonStyle}>
+                            <AddTaskIcon/>
+                        </IconButton>
+                    </Tweet>
+                </VStack>
             </AppBar>
             <Drawer
                 sx={{
@@ -164,7 +214,7 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 <List>
                     <For
                         each={[
-                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/>,dialog:"stopwatch"},
+                            { name: "ストップウォッチ", icon:<TimerOutlinedIcon/>,dialog:"stopwatch"},
                             { name: "記録", icon:<EditNoteIcon/>,dialog:"log"},
                             { name: "つぶやき", icon:<ChatBubbleIcon/>,dialog:"tweet"},
                             { name: "タスクを追加", icon:<AddTaskIcon/>,dialog:"task"},
