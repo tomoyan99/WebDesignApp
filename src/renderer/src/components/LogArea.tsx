@@ -8,6 +8,8 @@ import DateField from "./DateField";
 import {Avatar} from "../ui/avatar";
 import todo from "../assets/todo.png";
 import ElapsedTime from "./ElapsedTime";
+import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../ui/accordion";
+import React from "react";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
@@ -137,39 +139,73 @@ function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
                 <FaRegPenToSquare/>
             </TimelineConnector>
             <TimelineContent>
-                <Text
-                    textStyle={"lg"}
-                    // fontFamily={"'BIZ UDPGothic',sans-serif"}
-                    whiteSpace={"pre-wrap"}
-                >
-                    {props.topic}
-                </Text>
-                <TimelineDescription letterSpacing={"wide"}>
-                    <DateField value={props.date}/>
-                </TimelineDescription>
-                    {props.reply?(<ReplyCard {...props.reply}/>):(<></>)}
+                <Card.Root width="100%">
+                    <Card.Body gap={2}>
+                        <Card.Description textStyle={"lg"} whiteSpace={"pre-wrap"}>
+                            {props.topic}
+                        </Card.Description>
+                    </Card.Body>
+                    <Card.Footer>
+                        <TimelineDescription letterSpacing={"wide"}>
+                            <DateField value={props.date}/>
+                        </TimelineDescription>
+                    </Card.Footer>
+                </Card.Root>
+                {props.reply?(<ReplyAccordion {...props.reply}/>):(<></>)}
             </TimelineContent>
         </TimelineItem>
     );
 }
 
+function ReplyAccordion(props:ReplyInfo){
+    const [open, setOpen] = React.useState(false);
+
+    return (
+        <AccordionRoot
+            collapsible
+            default
+            bg={"white"}
+            borderWidth={1}
+            borderColor={"gray.light"}
+            variant={"plain"}
+            rounded={"md"}
+            onValueChange={()=>setOpen(!open)}
+            open={open}
+        >
+            <AccordionItem>
+                <AccordionItemTrigger
+                    pl={4}
+                >
+                    {open
+                        ? (<>
+                            <HStack gap={4} w={"100%"}>
+                                <Avatar
+                                    src={props.avatar}
+                                    name={props.name}
+                                    size="lg"
+                                    shape="rounded"
+                                    bg={"transparent"}
+                                />
+                                <VStack gap={0}>
+                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.name}</Text>
+                                    <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.id}</Text>
+                                </VStack>
+                            </HStack>
+                        </>)
+                        : (<><Text w={"100%"} pl={"4"} color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text></>)}
+                </AccordionItemTrigger>
+                <AccordionItemContent pt={1}>
+                    <ReplyCard {...props}/>
+                </AccordionItemContent>
+            </AccordionItem>
+        </AccordionRoot>
+    )
+}
+
 function ReplyCard(props:ReplyInfo) {
     return (
-        <Card.Root width="100%">
-            <Card.Body gap={2}>
-                <HStack gap={4}>
-                    <Avatar
-                        src={props.avatar}
-                        name={props.name}
-                        size="lg"
-                        shape="rounded"
-                        bg={"transparent"}
-                    />
-                    <VStack gap={0}>
-                        <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.name}</Text>
-                        <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.id}</Text>
-                    </VStack>
-                </HStack>
+        <Card.Root width="100%" borderWidth={0}>
+            <Card.Body gap={2} pt={0}>
                 <Card.Description whiteSpace={"pre-wrap"}>
                     {props.message}
                 </Card.Description>

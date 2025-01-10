@@ -6,7 +6,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,31 +16,15 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import BestBoutArea from "./BestBoutArea";
-import {For} from "@chakra-ui/react";
+import {For, Text} from "@chakra-ui/react";
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { useWindowSize } from '../hooks/useWindowSize';
-import {
-    DialogActionTrigger,
-    DialogBody, DialogCloseTrigger,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogRoot,
-    DialogTitle,
-    DialogTrigger
-} from "../ui/dialog";
-import {Button} from "../ui/button";
+import Tweet from "./Tweet";
 
 const drawerWidth = 280;
-
-
-interface AppBarProps extends MuiAppBarProps {
-    open?: boolean;
-}
-
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' }) <{ open?: boolean; }>(({ theme }) => ({
     flexGrow: 1,
@@ -68,7 +51,9 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' }) <{
 
 
 
-
+interface AppBarProps extends MuiAppBarProps {
+    open?: boolean;
+}
 
 const AppBar = styled(MuiAppBar,{shouldForwardProp: (prop) => prop !== 'open'})
     <AppBarProps>(({ theme }) => ({
@@ -150,9 +135,9 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 open={open}
             >
                 <DrawerHeader>
-                    <Typography variant="h5" width={"100%"} paddingLeft={"1em"}>
+                    <Text textStyle={"2xl"} w={"100%"} pl={"1em"}>
                         アプリ名？
-                    </Typography>
+                    </Text>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
@@ -168,40 +153,36 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                             { name: "タスクを追加", icon:<AddTaskIcon/>  },
                         ]}
                     >
-                        {(item) => (
-                            <ListItem key={item.name} disablePadding>
-                                <DialogRoot>
-                                    <DialogTrigger asChild>
+                        {(item,index) => (
+                            <Tweet.TweetRoot key={`Tweet_${index}`}>
+                                <Tweet.Trigger>
+                                    <ListItem key={item.name} disablePadding>
                                         <ListItemButton>
                                             <ListItemIcon>
                                                 {item.icon}
                                             </ListItemIcon>
                                             <ListItemText
                                                 disableTypography
-                                                primary={<Typography fontSize={"1.1em"} sx={{transform:"rotate(0.05deg)"}}>{item.name}</Typography>}
+                                                primary={<Text fontSize={"1.1em"}>{item.name}</Text>}
                                             />
                                         </ListItemButton>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>Dialog Title</DialogTitle>
-                                        </DialogHeader>
-                                        <DialogBody>
-                                            <p>
-                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                                                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                            </p>
-                                        </DialogBody>
-                                        <DialogFooter>
-                                            <DialogActionTrigger asChild>
-                                                <Button variant="outline">Cancel</Button>
-                                            </DialogActionTrigger>
-                                            <Button>Save</Button>
-                                        </DialogFooter>
-                                        <DialogCloseTrigger />
-                                    </DialogContent>
-                                </DialogRoot>
-                            </ListItem>
+                                    </ListItem>
+                                </Tweet.Trigger>
+                                <Tweet.Content>
+                                    <Tweet.Header>
+                                        だいあろぐ
+                                    </Tweet.Header>
+                                    <Tweet.Body>
+                                        <Text>
+                                            ここにはダイアログのいろんな内容が
+                                            いっぱい入るよ
+                                        </Text>
+                                    </Tweet.Body>
+                                    <Tweet.Footer>
+
+                                    </Tweet.Footer>
+                                </Tweet.Content>
+                            </Tweet.TweetRoot>
                         )}
                     </For>
                 </List>

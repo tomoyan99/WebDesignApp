@@ -9,35 +9,73 @@ import {
     DialogTrigger
 } from "../ui/dialog";
 import {Button} from "../ui/button";
+import {
+    DialogBodyProps,
+    DialogContentProps, DialogFooterProps,
+    DialogHeaderProps,
+    DialogRootProps,
+    HTMLChakraProps
+} from "@chakra-ui/react";
+import React from "react";
 
-function Tweet(){
-return(
-    <DialogRoot>
-        <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
-                Open Dialog
-            </Button>
-        </DialogTrigger>
-        <DialogContent>
-            <DialogHeader>
-                <DialogTitle>Dialog Title</DialogTitle>
+namespace Tweet {
+
+    export function TweetRoot(props:DialogRootProps) {
+        const {children,...other} = props;
+
+        return(
+            <DialogRoot {...other}>
+                {children}
+            </DialogRoot>
+        );
+    }
+
+    export function Trigger({children}:{children:React.ReactNode}) {
+        return (
+            <DialogTrigger asChild>
+                {children}
+            </DialogTrigger>
+        )
+    }
+
+    export function Content(props:DialogContentProps&HTMLChakraProps<"div">) {
+        const {children, ...other} = props;
+        return(
+            <DialogContent {...other}>
+                {children}
+                <DialogCloseTrigger />
+            </DialogContent>
+        )
+    }
+
+    export function Header(props:DialogHeaderProps&HTMLChakraProps<"div">) {
+        const {children, ...other} = props;
+        return(
+            <DialogHeader {...other}>
+                <DialogTitle>{children}</DialogTitle>
             </DialogHeader>
-            <DialogBody>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
+        )
+    }
+    export function Body(props:DialogBodyProps&HTMLChakraProps<"div">) {
+        const {children, ...other} = props;
+        return(
+            <DialogBody {...other}>
+                {children}
             </DialogBody>
-            <DialogFooter>
+        );
+    }
+
+    export function Footer(props:DialogFooterProps&HTMLChakraProps<"div">) {
+        const {children, ...other} = props;
+        return(
+            <DialogFooter {...other}>
                 <DialogActionTrigger asChild>
                     <Button variant="outline">Cancel</Button>
                 </DialogActionTrigger>
                 <Button>Save</Button>
             </DialogFooter>
-            <DialogCloseTrigger />
-        </DialogContent>
-    </DialogRoot>
-);
+        );
+    }
 }
 
 export default Tweet;
