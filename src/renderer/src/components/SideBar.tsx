@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import BestBoutArea from "./BestBoutArea";
+import BestBoutArea from "./Areas/BestBoutArea";
 import {For, Text} from "@chakra-ui/react";
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import EditNoteIcon from '@mui/icons-material/EditNote';

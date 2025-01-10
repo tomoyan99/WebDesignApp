@@ -1,5 +1,5 @@
 import {For, List} from "@chakra-ui/react";
-import {Area,AreaHeader,AreaBody} from "./Area";
+import {Area,AreaHeader,AreaBody} from "../Area";
 
 export default function BestBoutArea({data}:{data:string[]}) {
     return(

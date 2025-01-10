@@ -1,4 +1,4 @@
-import {Sessions} from "./components/SessionArea";
+import {Sessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
 
 export const test_sessions :Sessions[] = [
@@ -11,7 +11,7 @@ export const test_sessions :Sessions[] = [
             {
                 date_unix: 1609426860,
                 date_iso: "2020-01-03 00:00:00",
-                topic: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
+                post: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
                 reply: {
                     date_unix: 1609426860,
                     date_iso: "2020-01-03 00:00:00",

@@ -1,26 +1,32 @@
-import {Area,AreaHeader,AreaBody} from "./Area";
-import {TimelineConnector, TimelineContent, TimelineDescription, TimelineItem, TimelineRoot, TimelineTitle} from "../ui/timeline"
+import {Area,AreaHeader,AreaBody} from "../Area";
+import {TimelineConnector, TimelineContent, TimelineDescription, TimelineItem, TimelineRoot, TimelineTitle} from "../../ui/timeline"
 import { FaRegPenToSquare } from "react-icons/fa6";
 import { LuPlay,LuPause } from "react-icons/lu";
 import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
-import DateField from "./DateField";
-import {Avatar} from "../ui/avatar";
-import ElapsedTime from "./ElapsedTime";
-import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../ui/accordion";
+import convUnixToIso from "../../util/convUnixToIso";
+import {Avatar} from "../../ui/avatar";
+import calclElapsedTime from "../../util/calclElapsedTime";
+import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
 import React from "react";
-import {EmptyState} from "../ui/empty-state";
+import {EmptyState} from "../../ui/empty-state";
 import { TbMoodEmpty } from "react-icons/tb";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
 // Replyの情報
-type ReplyInfo = {
+export type ReplyInfo = {
     avatar   :string,
-    name     :string,
-    id       :string,
+    replyName:string,
+    replyId  :string,
     message  :string,
     date_unix:number,
     date_iso :string,
+}
+export type PostInfo = {
+    date_unix   :number,
+    date_iso    :string,
+    postMessage :string,
+    reply      ?:ReplyInfo
 }
 
 export type Sessions = {
@@ -28,7 +34,7 @@ export type Sessions = {
     stop_unix  :number,
     start_iso  :string,
     stop_iso   :string,
-    topics:{date_unix:number,date_iso:string,topic:string,reply?:ReplyInfo}[]
+    topics     :PostInfo[]
 };
 
 
@@ -52,7 +58,7 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                                             <TimeLineTopic
                                                 key={`Topic_${item.start_unix}-${item.stop_unix}_${index2}`}
                                                 date={item2.date_unix}
-                                                topic={item2.topic}
+                                                topic={item2.postMessage}
                                                 reply={item2.reply}
                                             />
                                         )}
@@ -88,7 +94,7 @@ function TimeLineStart(props:{date:number}){
             <TimelineContent>
                 <TimelineTitle textStyle={"sm"}>タスクかいし！</TimelineTitle>
                 <TimelineDescription letterSpacing={"wide"}>
-                    <DateField value={props.date}/>
+                    {convUnixToIso(props.date)}
                 </TimelineDescription>
             </TimelineContent>
         </TimelineItem>
@@ -102,9 +108,9 @@ function TimeLineStop(props:{date:number,elapsed:number}){
             </TimelineConnector>
             <TimelineContent>
                 <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
-                <Text textStyle={"sm"} color={"fg.muted"}>経過時間：<ElapsedTime timestamp={props.elapsed}/></Text>
+                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calclElapsedTime(props.date)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
-                    <DateField value={props.date}/>
+                    {convUnixToIso(props.date)}
                 </TimelineDescription>
             </TimelineContent>
         </TimelineItem>
@@ -157,14 +163,14 @@ function ReplyAccordion(props:ReplyInfo){
                             <HStack gap={4} pt={1} pb={0}>
                                 <Avatar
                                     src={props.avatar}
-                                    name={props.name}
+                                    name={props.replyName}
                                     size="lg"
                                     shape="rounded"
                                     bg={"transparent"}
                                 />
                                 <VStack gap={0}>
-                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.name}</Text>
-                                    <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.id}</Text>
+                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.replyName}</Text>
+                                    <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.replyId}</Text>
                                 </VStack>
                             </HStack>
                         </>)
@@ -192,7 +198,7 @@ function TopicCard(props:CardBodyProps&{message:string,date:number}) {
                     {message}
                 </Card.Description>
                 <TimelineDescription letterSpacing={"wide"} color={"gray.400"}>
-                    <DateField value={date}/>
+                    {convUnixToIso(props.date)}
                 </TimelineDescription>
             </Card.Body>
         </Card.Root>

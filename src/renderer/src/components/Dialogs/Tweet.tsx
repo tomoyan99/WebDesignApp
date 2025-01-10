@@ -3,6 +3,8 @@ import {Box, Textarea,Text} from "@chakra-ui/react";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import {DialogActionTrigger} from "../../ui/dialog";
+import convUnixToIso from "../../util/convUnixToIso";
+import {PostInfo} from "../Areas/SessionArea";
 
 export function Tweet(props:{children?:React.ReactNode}) {
     const [value, setValue] = React.useState("");
@@ -12,6 +14,16 @@ export function Tweet(props:{children?:React.ReactNode}) {
     const onClickButton = () => {
         alert(value);
         setValue("");
+        const message = value;
+        const nowTimeUNIX = (new Date()).valueOf();
+        const nowTimeISO = convUnixToIso(nowTimeUNIX);
+        // 投稿
+        const post:PostInfo = {
+            date_iso :nowTimeISO,
+            date_unix:nowTimeUNIX,
+            postMessage:message,
+        }
+        console.log(post)
     }
     const ref = React.useRef<HTMLTextAreaElement>(null);
     return(

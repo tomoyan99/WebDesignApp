@@ -1,9 +1,9 @@
 import React from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react"
 import SideBar from "./components/SideBar";
-import TaskArea from "./components/TaskArea";
-import NewsArea from "./components/NewsArea";
-import SessionArea from "./components/SessionArea";
+import TaskArea from "./components/Areas/TaskArea";
+import NewsArea from "./components/Areas/NewsArea";
+import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
 import {useWindowSize} from "./hooks/useWindowSize";
 import {test_sessions} from "./testData";

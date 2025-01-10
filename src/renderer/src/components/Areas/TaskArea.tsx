@@ -1,7 +1,7 @@
-import {Area,AreaHeader,AreaBody} from "./Area";
-import {Button} from "../ui/button";
+import {Area,AreaHeader,AreaBody} from "../Area";
+import {Button} from "../../ui/button";
 import {For, HStack, Text, VStack} from "@chakra-ui/react";
-import {StopWatch} from "./Dialogs/StopWatch";
+import {StopWatch} from "../Dialogs/StopWatch";
 
 export default function TaskArea(){
     return(

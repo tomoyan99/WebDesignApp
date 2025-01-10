@@ -1,5 +1,5 @@
-import {Area,AreaHeader} from "./Area";
-import {Speech} from "./Speech";
+import {Area,AreaHeader} from "../Area";
+import {Speech} from "../Speech";
 import {For, VStack} from "@chakra-ui/react";
 
 export default function NewsArea(){
