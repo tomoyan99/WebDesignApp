@@ -1,18 +1,14 @@
 import * as React from 'react';
 import {styled, useTheme} from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BestBoutArea from "./Areas/BestBoutArea";
-import {For, Text} from "@chakra-ui/react";
+import {For, HTMLChakraProps, Text,Box,IconButton} from "@chakra-ui/react";
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -29,58 +25,66 @@ import ListItemText from "@mui/material/ListItemText";
 
 const drawerWidth = 280;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' }) <{ open?: boolean; }>(({ theme }) => ({
-    flexGrow: 1,
-    padding: `${theme.spacing(2)} ${theme.spacing(3)}`,
-    height: '100vh',
-    transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    variants: [
-        {
-            props: ({ open }) => open,
-            style: {
-                transition: theme.transitions.create('margin', {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-                marginLeft: 0,
-            },
-        },
-    ],
-}));
-
-
-
-interface AppBarProps extends MuiAppBarProps {
+interface MainProps extends HTMLChakraProps<"div">{
     open?: boolean;
+    drawerWidth: number;
 }
 
-const AppBar = styled(MuiAppBar,{shouldForwardProp: (prop) => prop !== 'open'})
-    <AppBarProps>(({ theme }) => ({
-        backgroundColor: "transparent",
-        color:"#000000",
-        boxShadow:"none",
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        variants: [
-            {
-                props: ({ open }) => open,
-                style: {
-                    width: `calc(100% - ${drawerWidth}px)`,
-                    marginLeft: `${drawerWidth}px`,
-                    transition: theme.transitions.create(['margin', 'width'], {
-                        easing: theme.transitions.easing.easeOut,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
-                },
-            },
-        ],
-    }));
+const Main: React.FC<MainProps> = ({ open = false, drawerWidth, children,...other }) => {
+    const theme = useTheme();
+    const marginLeft = open ? 0 : `-${drawerWidth}px`;
+
+    const transition = open
+        ? `${theme.transitions.duration.enteringScreen}ms ${theme.transitions.easing.easeOut}`
+        : `${theme.transitions.duration.leavingScreen}ms ${theme.transitions.easing.sharp}`;
+
+    return (
+        <Box
+            flexGrow={1}
+            h="100vh"
+            transition={`margin ${transition}`}
+            ml={marginLeft}
+            pl={open?2:0}
+            overflowY={"hidden"}
+            {...other}
+        >
+            {children}
+        </Box>
+    );
+};
+
+interface AppBarProps extends HTMLChakraProps<"div">{
+    open?: boolean;
+    drawerWidth: number;
+}
+
+const AppBar: React.FC<AppBarProps> = ({ open = false, drawerWidth, children }) => {
+    const theme = useTheme();
+
+    // 動的にスタイルを決定
+    const marginLeft = open ? `${drawerWidth}px` : "0";
+    const transition = open
+        ? `${theme.transitions.duration.enteringScreen}ms ${theme.transitions.easing.easeOut}`
+        : `${theme.transitions.duration.leavingScreen}ms ${theme.transitions.easing.sharp}`;
+
+    return (
+        <Box
+            as="header"
+            bg="transparent"
+            color="#000000"
+            boxShadow="none"
+            transition={`margin ${transition}, width ${transition}`}
+            width={"fit-content"}
+            minHeight="100vh"
+            height="100vh"
+            marginLeft={marginLeft}
+            display={open ? 'none' :'block'}
+        >
+            {children}
+        </Box>
+    );
+};
+
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -104,23 +108,25 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
     };
 
     return (
-        <Box sx={{ display: 'flex'}}>
+        <Box display={"flex"}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar variant="dense">
+            <AppBar open={open} drawerWidth={drawerWidth}>
+                <Box>
                     <IconButton
+                        size={"xl"}
                         color="inherit"
-                        aria-label="open drawer"
+                        bg={{
+                            base: "transparent",
+                            _hover:"blackAlpha.200"
+                        }}
+                        textStyle={"xl"}
                         onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={[
-                            {mr: 2},
-                            open && { display: 'none' },
-                        ]}
+                        display={open?'none':"block"}
+                        variant={"subtle"}
                     >
                         <MenuIcon />
                     </IconButton>
-                </Toolbar>
+                </Box>
             </AppBar>
             <Drawer
                 sx={{
@@ -141,7 +147,15 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                     <Text textStyle={"2xl"} w={"100%"} pl={"1em"}>
                         アプリ名？
                     </Text>
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton
+                        size={"lg"}
+                        bg={{
+                            base: "transparent",
+                            _hover:"blackAlpha.200"
+                        }}
+                        onClick={handleDrawerClose}
+                        variant={"subtle"}
+                    >
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>
@@ -194,9 +208,11 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                     <BestBoutArea data={["1月8日","2月20日","3月10日"]}/>
                 </Box>
             </Drawer>
-            <Main open={open} sx={{display: 'grid',gridTemplateRows:"fit-content(100%) 1fr"}}>
-                <Toolbar variant="dense" sx={{minHeight: '36px',height:"36px"}}/>
-                <Box height={`${windowHeight-64}px`} width={"100%"}>
+            <Main
+                open={open}
+                drawerWidth={drawerWidth}
+            >
+                <Box h={"100%"} width={"100%"}>
                     {children}
                 </Box>
             </Main>

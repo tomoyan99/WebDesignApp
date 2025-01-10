@@ -1,6 +1,6 @@
 import {Box, Heading, HTMLChakraProps} from "@chakra-ui/react";
 
-export function Area(props:HTMLChakraProps<"div",{}>) {
+export function Area(props:HTMLChakraProps<"div">) {
     const {children,w,h,bg,display,title,...other} = props;
 
     return(
@@ -21,12 +21,12 @@ export function Area(props:HTMLChakraProps<"div",{}>) {
 
 export function AreaHeader({children}:{children:string}){
     return (
-        <Heading size="2xl" h={"fit-content"} marginBottom={"1"}>
+        <Heading size="xl" h={"fit-content"} marginBottom={"1"}>
             {children}
         </Heading>
     );
 }
-export function AreaBody(props:HTMLChakraProps<"div",{}>){
+export function AreaBody(props:HTMLChakraProps<"div">){
     const {display,children,...other} = props;
     return (
         <Box w={"100%"} h={"100%"}

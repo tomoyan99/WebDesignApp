@@ -1,5 +1,6 @@
 import {Sessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
+import {TaskProps} from "./components/Areas/TaskArea";
 
 export const test_sessions :Sessions[] = [
     {
@@ -11,12 +12,12 @@ export const test_sessions :Sessions[] = [
             {
                 date_unix: 1609426860,
                 date_iso: "2020-01-03 00:00:00",
-                post: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
+                postMessage: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
                 reply: {
                     date_unix: 1609426860,
                     date_iso: "2020-01-03 00:00:00",
-                    name: "トドりん",
-                    id: "todorin1122",
+                    replyName: "トドりん",
+                    replyId: "todorin1122",
                     avatar: getImage("todo.png"),
                     message:
                         "これはクライアントには出せないかなぁ。\n" +
@@ -25,5 +26,12 @@ export const test_sessions :Sessions[] = [
                 },
             }
         ],
+    }
+];
+
+export const test_tasks:TaskProps[] = [
+    {
+        date:1234567768,
+        content:"食べる"
     }
 ];

@@ -6,7 +6,7 @@ import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
 import {useWindowSize} from "./hooks/useWindowSize";
-import {test_sessions} from "./testData";
+import {test_sessions, test_tasks} from "./testData";
 
 
 function App(): React.ReactElement {
@@ -17,17 +17,19 @@ function App(): React.ReactElement {
             <SideBar>
                 <Grid
                     h="100%"
-                    templateRows="repeat(4, 1fr)"
+                    templateRows="minmax(min-content, auto) minmax(10px, 1fr)"
                     templateColumns="repeat(4, 1fr)"
+                    p={2}
+                    pt={8}
                     gap={3}
                 >
-                    <GridItem rowSpan={1} colSpan={4}>
-                        <TaskArea/>
+                    <GridItem  colSpan={4}>
+                        <TaskArea tasks={test_tasks}/>
                     </GridItem>
-                    <GridItem rowSpan={3} colSpan={2}>
+                    <GridItem  colSpan={2}>
                         <SessionArea sessions={test_sessions}/>
                     </GridItem>
-                    <GridItem rowSpan={3} colSpan={2}>
+                    <GridItem  colSpan={2}>
                         <NewsArea/>
                     </GridItem>
                 </Grid>
