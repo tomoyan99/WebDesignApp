@@ -3,10 +3,11 @@ import {TimelineConnector, TimelineContent, TimelineDescription, TimelineItem, T
 import { FaRegPenToSquare } from "react-icons/fa6";
 import { LuPlay,LuPause } from "react-icons/lu";
 import {Card, For, HStack, Text, VStack} from "@chakra-ui/react";
-import '@fontsource/biz-udpgothic';
+// import '@fontsource/biz-udpgothic';
 import DateField from "./DateField";
 import {Avatar} from "../ui/avatar";
 import todo from "../assets/todo.png";
+import ElapsedTime from "./ElapsedTime";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
@@ -87,7 +88,7 @@ export default function LogArea(){
                                         />
                                     )}
                                 </For>
-                                <TimeLineStop date={item.stop}/>
+                                <TimeLineStop date={item.stop} elapsed={item.stop - item.start}/>
                             </TimelineRoot>
                         </AreaBody>
                     )}
@@ -112,7 +113,7 @@ function TimeLineStart(props:{date:number}){
         </TimelineItem>
     );
 }
-function TimeLineStop(props:{date:number}){
+function TimeLineStop(props:{date:number,elapsed:number}){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
@@ -120,6 +121,7 @@ function TimeLineStop(props:{date:number}){
             </TimelineConnector>
             <TimelineContent>
                 <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
+                <Text textStyle={"sm"} color={"fg.muted"}>経過時間：<ElapsedTime timestamp={props.elapsed}/></Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     <DateField value={props.date}/>
                 </TimelineDescription>
@@ -136,8 +138,8 @@ function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
             </TimelineConnector>
             <TimelineContent>
                 <Text
-                    textStyle={"md"}
-                    fontFamily={"'BIZ UDPGothic',sans-serif"}
+                    textStyle={"lg"}
+                    // fontFamily={"'BIZ UDPGothic',sans-serif"}
                     whiteSpace={"pre-wrap"}
                 >
                     {props.topic}

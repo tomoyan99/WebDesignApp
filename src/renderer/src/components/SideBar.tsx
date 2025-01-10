@@ -23,6 +23,17 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { useWindowSize } from '../hooks/useWindowSize';
+import {
+    DialogActionTrigger,
+    DialogBody, DialogCloseTrigger,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogRoot,
+    DialogTitle,
+    DialogTrigger
+} from "../ui/dialog";
+import {Button} from "../ui/button";
 
 const drawerWidth = 280;
 
@@ -151,7 +162,7 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                 <List>
                     <For
                         each={[
-                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/> },
+                            { name: "ストップウォッチ", icon:<AccessAlarmIcon/>},
                             { name: "記録", icon:<EditNoteIcon/>  },
                             { name: "つぶやき", icon:<ChatBubbleIcon/>  },
                             { name: "タスクを追加", icon:<AddTaskIcon/>  },
@@ -159,15 +170,37 @@ export default function SideBarFrame({children}:{children:React.ReactNode}) {
                     >
                         {(item) => (
                             <ListItem key={item.name} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        disableTypography
-                                        primary={<Typography fontSize={"1.1em"} sx={{transform:"rotate(0.05deg)"}}>{item.name}</Typography>}
-                                    />
-                                </ListItemButton>
+                                <DialogRoot>
+                                    <DialogTrigger asChild>
+                                        <ListItemButton>
+                                            <ListItemIcon>
+                                                {item.icon}
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                disableTypography
+                                                primary={<Typography fontSize={"1.1em"} sx={{transform:"rotate(0.05deg)"}}>{item.name}</Typography>}
+                                            />
+                                        </ListItemButton>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Dialog Title</DialogTitle>
+                                        </DialogHeader>
+                                        <DialogBody>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                                                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                            </p>
+                                        </DialogBody>
+                                        <DialogFooter>
+                                            <DialogActionTrigger asChild>
+                                                <Button variant="outline">Cancel</Button>
+                                            </DialogActionTrigger>
+                                            <Button>Save</Button>
+                                        </DialogFooter>
+                                        <DialogCloseTrigger />
+                                    </DialogContent>
+                                </DialogRoot>
                             </ListItem>
                         )}
                     </For>
