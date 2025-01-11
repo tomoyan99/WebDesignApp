@@ -34,6 +34,7 @@ export type Sessions = {
     stop_unix  ?:number,
     start_iso  ?:string,
     stop_iso   ?:string,
+    task       ?:string,
     posts      :PostInfo[]
 };
 
@@ -49,10 +50,11 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                             <AreaBody
                                 key={`LogArea_TimeLine_${index}`}
                                 p={6}
+                                pb={0}
                                 h={"fit-content"}
                             >
                                 <TimelineRoot  size={"lg"} maxW="400px">
-                                    {item.start_unix && <TimeLineStart date={item.start_unix}/>}
+                                    {(item.start_unix) && <TimeLineStart date={item.start_unix} task={item?.task}/>}
                                     <For each={item.posts}>
                                         {(item2, index2)=>(
                                             <TimeLineTopic
@@ -67,6 +69,7 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                                         date={item.stop_unix}
                                         start={item.start_unix}
                                         stop={item.stop_unix}
+                                        task={item?.task}
                                     />}
                                 </TimelineRoot>
                             </AreaBody>
@@ -89,14 +92,18 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
     );
 }
 
-function TimeLineStart(props:{date:number}){
+function TimeLineStart(props:{date:number,task?:string}){
     return(
         <TimelineItem>
             <TimelineConnector bg="teal.solid" color="teal.contrast" fontSize={"md"}>
                 <LuPlay/>
             </TimelineConnector>
             <TimelineContent>
-                <TimelineTitle textStyle={"sm"}>タスクかいし！</TimelineTitle>
+                <TimelineTitle textStyle={"sm"}>
+                    {props.task && `[${props.task}]`}
+                    {props.task && <br/>}
+                    タスクかいし！
+                </TimelineTitle>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date)}
                 </TimelineDescription>
@@ -104,14 +111,18 @@ function TimeLineStart(props:{date:number}){
         </TimelineItem>
     );
 }
-function TimeLineStop(props:{date:number,start:number,stop:number}){
+function TimeLineStop(props:{date:number,start:number,stop:number,task?:string}){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
                 <LuPause/>
             </TimelineConnector>
-            <TimelineContent pb={0}>
-                <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
+            <TimelineContent >
+                <TimelineTitle textStyle="sm">
+                    {props.task && `[${props.task}]`}
+                    {props.task && <br/>}
+                    タスクしゅーりょー！
+                </TimelineTitle>
                 <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.start,props.stop)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date)}

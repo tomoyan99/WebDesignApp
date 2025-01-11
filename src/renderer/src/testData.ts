@@ -8,6 +8,7 @@ export const test_sessions :Sessions[] = [
         stop_unix :1609513200,
         start_iso :"2020-01-01 00:00:00",
         stop_iso  :"2020-01-02 00:00:00",
+        task      :"食べる",
         posts:[
             {
                 date_unix: 1609426860,

@@ -9,12 +9,10 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BestBoutArea from "./Areas/BestBoutArea";
 import {For, HTMLChakraProps, Text, Box, IconButton, VStack, IconButtonProps} from "@chakra-ui/react";
-
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-// import { useWindowSize } from '../hooks/useWindowSize';
 import {Tweet} from "./Dialogs/Tweet";
 import {StopWatch} from "./Dialogs/StopWatch";
 import {AddLog} from "./Dialogs/AddLog";
