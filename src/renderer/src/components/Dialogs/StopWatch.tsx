@@ -6,14 +6,12 @@ import { DialogActionTrigger } from "../../ui/dialog";
 
 export function StopWatch(props:{children?:React.ReactNode,task?:string}) {
     const { startStopwatch, stopStopwatch } = useStopwatchContext();
-    const [comment, setComment] = React.useState("");
 
-  // ダイアログを開始するトリガーにするためのステート
-  // -> MyDialog.Root の open/close を外部で制御するなら props でもOK
+    // ダイアログを開始するトリガーにするためのステート
+    // -> MyDialog.Root の open/close を外部で制御するなら props でもOK
 
     return(
-        <MyDialog.Root 
-        closeOnInteractOutside={false}>
+        <MyDialog.Root closeOnInteractOutside={false}>
             <MyDialog.Trigger>
                 <Box>
                     {props.children}
@@ -34,17 +32,15 @@ export function StopWatch(props:{children?:React.ReactNode,task?:string}) {
                     {props.task && `タスク:${props.task}`}
                 </MyDialog.Body>
                 <MyDialog.Footer>
-        {/* 「開始」ボタン：ストップウォッチを開始してダイアログを閉じる */}
-        <DialogActionTrigger asChild>
-            <Button
-                colorScheme="orange"
-                onClick={() => {
-                    startStopwatch();
-                }}
-            >
-                開始
-            </Button>
-        </DialogActionTrigger>
+                    {/* 「開始」ボタン：ストップウォッチを開始してダイアログを閉じる */}
+                    <DialogActionTrigger asChild>
+                        <Button
+                            colorScheme="orange"
+                            onClick={startStopwatch}
+                        >
+                            開始
+                        </Button>
+                    </DialogActionTrigger>
                 </MyDialog.Footer>
             </MyDialog.Content>
         </MyDialog.Root>
