@@ -8,7 +8,7 @@ export const test_sessions :Sessions[] = [
         stop_unix :1609513200,
         start_iso :"2020-01-01 00:00:00",
         stop_iso  :"2020-01-02 00:00:00",
-        topics:[
+        posts:[
             {
                 date_unix: 1609426860,
                 date_iso: "2020-01-03 00:00:00",
@@ -26,6 +26,26 @@ export const test_sessions :Sessions[] = [
                 },
             }
         ],
+    },
+    {
+        posts:[
+            {
+                date_unix: 1609426860,
+                date_iso: "2020-01-03 00:00:00",
+                postMessage: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
+                reply: {
+                    date_unix: 1609426860,
+                    date_iso: "2020-01-03 00:00:00",
+                    replyName: "トドりん",
+                    replyId: "todorin1122",
+                    avatar: getImage("todo.png"),
+                    message:
+                        "これはクライアントには出せないかなぁ。\n" +
+                        "帰属意識は大事だけど視野狭窄になってない？\n" +
+                        "昇格はちょっと厳しくなったかもね。\n"
+                },
+            }
+        ]
     }
 ];
 

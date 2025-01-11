@@ -1,6 +1,6 @@
 
 // UNIXタイムスタンプの差分（秒単位）を受け取り
-function calclElapsedTime(start: number,stop:number) {
+function calcElapsedTime(start: number, stop:number) {
     const timestamp = stop - start;
     const hours = Math.floor(timestamp / 3600);
     const minutes = Math.floor((timestamp % 3600) / 60);
@@ -16,4 +16,4 @@ function calclElapsedTime(start: number,stop:number) {
     return `${timeString}${seconds}秒`;
 }
 
-export default calclElapsedTime;
+export default calcElapsedTime;

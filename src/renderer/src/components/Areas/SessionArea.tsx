@@ -5,7 +5,7 @@ import { LuPlay,LuPause } from "react-icons/lu";
 import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
 import convUnixToIso from "../../util/convUnixToIso";
 import {Avatar} from "../../ui/avatar";
-import calclElapsedTime from "../../util/calclElapsedTime";
+import calcElapsedTime from "../../util/calcElapsedTime";
 import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
 import React from "react";
 import {EmptyState} from "../../ui/empty-state";
@@ -30,11 +30,11 @@ export type PostInfo = {
 }
 
 export type Sessions = {
-    start_unix :number,
-    stop_unix  :number,
-    start_iso  :string,
-    stop_iso   :string,
-    topics     :PostInfo[]
+    start_unix ?:number,
+    stop_unix  ?:number,
+    start_iso  ?:string,
+    stop_iso   ?:string,
+    posts      :PostInfo[]
 };
 
 
@@ -48,12 +48,12 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                         {(item, index)=>(
                             <AreaBody
                                 key={`LogArea_TimeLine_${index}`}
-                                p={4}
+                                p={6}
                                 h={"fit-content"}
                             >
                                 <TimelineRoot  size={"lg"} maxW="400px">
-                                    <TimeLineStart date={item.start_unix}/>
-                                    <For each={item.topics}>
+                                    {item.start_unix && <TimeLineStart date={item.start_unix}/>}
+                                    <For each={item.posts}>
                                         {(item2, index2)=>(
                                             <TimeLineTopic
                                                 key={`Topic_${item.start_unix}-${item.stop_unix}_${index2}`}
@@ -63,11 +63,11 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                                             />
                                         )}
                                     </For>
-                                    <TimeLineStop
+                                    {(item.stop_unix && item.start_unix) && <TimeLineStop
                                         date={item.stop_unix}
                                         start={item.start_unix}
                                         stop={item.stop_unix}
-                                    />
+                                    />}
                                 </TimelineRoot>
                             </AreaBody>
                         )}
@@ -110,9 +110,9 @@ function TimeLineStop(props:{date:number,start:number,stop:number}){
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
                 <LuPause/>
             </TimelineConnector>
-            <TimelineContent>
+            <TimelineContent pb={0}>
                 <TimelineTitle textStyle="sm">タスクしゅーりょー！</TimelineTitle>
-                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calclElapsedTime(props.start,props.stop)}`}</Text>
+                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.start,props.stop)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date)}
                 </TimelineDescription>
@@ -149,7 +149,7 @@ function ReplyAccordion(props:ReplyInfo){
         <AccordionRoot
             collapsible
             default
-            bg={"white"}
+            bg={{base:"white"}}
             borderWidth={1}
             borderColor={"gray.light"}
             variant={"plain"}
@@ -163,7 +163,7 @@ function ReplyAccordion(props:ReplyInfo){
                     pr={4}
                 >
                     {open
-                        ? (<>
+                        ? (
                             <HStack gap={4} pt={1} pb={0}>
                                 <Avatar
                                     src={props.avatar}
@@ -177,8 +177,8 @@ function ReplyAccordion(props:ReplyInfo){
                                     <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.replyId}</Text>
                                 </VStack>
                             </HStack>
-                        </>)
-                        : (<><Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text></>)}
+                        )
+                        : (<Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text>)}
                 </AccordionItemTrigger>
                 <AccordionItemContent pt={1} pb={1}>
                     <TopicCard
