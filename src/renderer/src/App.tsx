@@ -7,6 +7,7 @@ import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
 import {useWindowSize} from "./hooks/useWindowSize";
 import {test_news, test_sessions, test_tasks} from "./testData";
+import StopwatchDisplay from "./components/StopwatchDisplay";
 
 
 function App(): React.ReactElement {
@@ -16,6 +17,7 @@ function App(): React.ReactElement {
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
             colorPalette={"orange"}
         >
+          <StopwatchDisplay />
             <SideBar>
                 <Grid
                     h="100%"

@@ -5,6 +5,7 @@ import {Provider} from "./ui/provider"
 import '@fontsource/zen-maru-gothic';
 import {createTheme,ThemeProvider} from "@mui/material";
 import {createSystem, defaultConfig} from "@chakra-ui/react";
+import { StopwatchProvider } from "./context/StopwatchContext";
 
 const theme = createTheme({
     typography:{
@@ -26,7 +27,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider system={system}>
+            <StopwatchProvider>
                 <App/>
+            </StopwatchProvider>
             </Provider>
         </ThemeProvider>
     </React.StrictMode>
