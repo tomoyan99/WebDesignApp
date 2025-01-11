@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react"
-import SideBar from "./components/SideBar";
+import SideBar from "./components/MyDrawer";
 import TaskArea from "./components/Areas/TaskArea";
 import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";

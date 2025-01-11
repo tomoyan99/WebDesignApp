@@ -6,7 +6,7 @@ import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 
 export type TaskProps = {
-    date:number,
+    date_unix:number,
     content:string
 };
 
@@ -35,7 +35,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                                             key={`TaskArea_Task${index}`}
                                         >
                                             <StopWatch task={item.content}>
-                                                <Task date={item.date} content={item.content}/>
+                                                <Task date_unix={item.date_unix} content={item.content}/>
                                             </StopWatch>
                                         </Box>
                                     );
@@ -56,7 +56,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
 
 
 function Task(data:TaskProps){
-    const nowDate = new Date(data.date);
+    const nowDate = new Date(data.date_unix);
     const month = `${nowDate.getMonth() + 1}`.padStart(2, "0");
     const date = `${nowDate.getDate()}`.padStart(2, "0");
 

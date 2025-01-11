@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {styled, useTheme} from '@mui/material/styles';
+import {useTheme} from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
@@ -85,14 +85,20 @@ const AppBar: React.FC<AppBarProps&{isVisible:boolean}> = ({ open = false, drawe
     );
 };
 
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'space-between',
-}));
+function DrawerHeader({ children,...other }:HTMLChakraProps<"div">) {
+    return (
+        <Box
+            display="flex"
+            alignItems="center"
+            px={1} // 左右のパディング
+            py={0} // 上下のパディング
+            justifyContent="space-between"
+            {...other}
+        >
+            {children}
+        </Box>
+    );
+}
 
 export default function SideBarFrame({children}:{children:React.ReactNode}) {
     const theme = useTheme();
