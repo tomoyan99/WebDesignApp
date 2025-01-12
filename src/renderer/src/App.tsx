@@ -16,7 +16,7 @@ function App(): React.ReactElement {
         isMinimum,
         currentTime,
         task,
-        resetStopwatch
+        finishStopwatch,
     } = useStopwatchContext();
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
@@ -27,7 +27,7 @@ function App(): React.ReactElement {
                 <StopwatchDisplay
                     time={formatStopWatchTime(currentTime)}
                     task={task}
-                    onFinish={resetStopwatch}
+                    onFinish={finishStopwatch}
                 />
             }
             <SideBar>
