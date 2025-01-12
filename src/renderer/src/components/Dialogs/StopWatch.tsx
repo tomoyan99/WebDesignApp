@@ -1,5 +1,5 @@
 import MyDialog from "../MyDialog";
-import {Heading} from "@chakra-ui/react";
+import {Heading, HStack,Text, VStack} from "@chakra-ui/react";
 import { Button } from "../../ui/button";
 import { useStopwatchContext } from "../../context/StopwatchContext";
 import {formatStopWatchTime} from "../../util/formatStopWatchTime";
@@ -34,13 +34,17 @@ export function StopWatch(props: Props) {
                 <MyDialog.Content>
                     <MyDialog.Header>ストップウォッチ</MyDialog.Header>
                     <MyDialog.Body>
-                        <Heading size={"xl"} style={{ fontSize: "2rem", textAlign: "center" }}>
-                            {formatStopWatchTime(currentTime)}
-                        </Heading>
-                        {props.task && <p style={{ marginTop: "1rem" }}>タスク: {props.task}</p>}
+                        <VStack gap={4}>
+                            <Heading size={"4xl"} textAlign={"center"} letterSpacing={4}>
+                                {formatStopWatchTime(currentTime)}
+                            </Heading>
+
+
+                            {props.task && <Text>タスク: {props.task}</Text>}
+                        </VStack>
                     </MyDialog.Body>
                     <MyDialog.Footer>
-                        <div style={{display: "flex", justifyContent: "center", gap: "10px", marginTop: "1rem"}}>
+                        <HStack justifyContent={"center"} gap={4}>
                             {isRunning ? (
                                 <DialogActionTrigger asChild>
                                     <Button onClick={finishStopwatch} variant="outline" colorPalette="red">
@@ -54,10 +58,14 @@ export function StopWatch(props: Props) {
                                     開始
                                 </Button>
                             )}
-                        </div>
+                        </HStack>
                     </MyDialog.Footer>
                 </MyDialog.Content>
             </MyDialog.Root>
         </>
     );
+}
+
+function TaskSelect(){
+
 }

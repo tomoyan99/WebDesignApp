@@ -15,14 +15,9 @@ export function AddTask(props:Props) {
         >
             <MyDialog.Content>
                 <MyDialog.Header>
-                    たすくついか
+                    タスクついか
                 </MyDialog.Header>
                 <MyDialog.Body>
-                    <Text>
-                        ここには
-                        ダイアログの内容が
-                        入るよ
-                    </Text>
                 </MyDialog.Body>
                 <MyDialog.Footer>
 

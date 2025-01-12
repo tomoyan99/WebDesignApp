@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react"
 import SideBar from "./components/MyDrawer";
 import TaskArea from "./components/Areas/TaskArea";
@@ -9,6 +9,20 @@ import {test_news, test_sessions, test_tasks} from "./testData";
 import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
+import {useTaskContext} from "./context/TaskContext";
+
+function DataFetcher(){
+    const {addTask,taskData} = useTaskContext();
+    useEffect(() => {
+        let ignore = false;
+        if(!ignore) addTask(test_tasks);
+        console.log(taskData);
+        return () => {
+            ignore = true;
+        };
+    }, []);
+}
+
 
 function App(): React.ReactElement {
     const {
@@ -18,6 +32,17 @@ function App(): React.ReactElement {
         task,
         finishStopwatch,
     } = useStopwatchContext();
+
+    const {addTask,taskData} = useTaskContext();
+
+    useEffect(() => {
+        let ignore = false;
+        if(!ignore) addTask(test_tasks);
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
              colorPalette={"orange"}
@@ -40,7 +65,7 @@ function App(): React.ReactElement {
                     gap={3}
                 >
                     <GridItem  colSpan={4}>
-                        <TaskArea tasks={test_tasks}/>
+                        <TaskArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
                         <SessionArea sessions={test_sessions}/>

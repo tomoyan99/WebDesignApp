@@ -1,6 +1,6 @@
 import {Sessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
-import {TaskProps} from "./components/Areas/TaskArea";
+import {TaskProps} from "./context/TaskContext";
 
 export const test_sessions :Sessions[] = [
     {

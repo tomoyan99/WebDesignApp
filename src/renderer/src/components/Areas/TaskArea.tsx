@@ -5,21 +5,17 @@ import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
 import {useMyDialog} from "../../context/DialogsContext";
+import { TaskProps, useTaskContext } from "../../context/TaskContext";
 
-export interface TaskProps{
-    date_unix:number,
-    task:string,
-    disabled?:boolean,
-}
 
-export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
+export default function TaskArea() {
     const {isRunning} = useStopwatchContext();
-
+    const {taskData} = useTaskContext();
     return(
         <Area>
             <AreaHeader>タスク</AreaHeader>
             <AreaBody shadow={"none"} overflowX="auto">
-                {tasks.length > 0
+                {taskData.length > 0
                     ? (
                         <HStack
                             gap={4}
@@ -28,7 +24,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                             pr={5}
                             overflowY="hidden"
                         >
-                            <For each={tasks}>
+                            <For each={taskData}>
                                 {(item,index)=>{
                                     return (
                                         <Box
@@ -38,7 +34,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                                             transition={"0.3s"}
                                             key={`TaskArea_Task${index}`}
                                         >
-                                            <Task
+                                            <TaskButton
                                                 date_unix={item.date_unix}
                                                 task={item.task}
                                                 disabled={isRunning}
@@ -61,7 +57,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
 }
 
 
-function Task(data:TaskProps){
+function TaskButton(data:TaskProps&{disabled:boolean}){
     const { openDialog } = useMyDialog();
 
     const nowDate = new Date(data.date_unix);
