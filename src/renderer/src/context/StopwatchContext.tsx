@@ -1,12 +1,4 @@
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-    ReactNode,
-    useCallback
-  } from 'react';
+import * as React from 'react';
   
   // ストップウォッチの状態
   type StopwatchState = {
@@ -27,7 +19,7 @@ import React, {
   };
   
   // デフォルト値をとりあえず設定
-  const StopwatchContext = createContext<StopwatchContextType>({
+  const StopwatchContext = React.createContext<StopwatchContextType>({
     isRunning: false,
     currentTime: 0,
     startStopwatch: () => {},
@@ -37,26 +29,26 @@ import React, {
   
   // useContext で取り出しやすいようにフックを作る
   export const useStopwatchContext = () => {
-    return useContext(StopwatchContext);
+    return React.useContext(StopwatchContext);
   };
   
   // Provider コンポーネント
-  export const StopwatchProvider = ({ children }: { children: ReactNode }) => {
-    const [stopwatchState, setStopwatchState] = useState<StopwatchState>({
+  export const StopwatchProvider = ({ children }: { children: React.ReactNode }) => {
+    const [stopwatchState, setStopwatchState] = React.useState<StopwatchState>({
       isRunning: false,
       startTime: 0,
       elapsed: 0,
     });
   
     // リアルタイム更新用の interval の管理;
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   
     // currentTime: elapsed + (今の時刻 - 開始時刻)
     const currentTime = stopwatchState.isRunning
       ? stopwatchState.elapsed + (Date.now() - stopwatchState.startTime)
       : stopwatchState.elapsed;
   
-    const startStopwatch = useCallback(() => {
+    const startStopwatch = React.useCallback(() => {
       if (stopwatchState.isRunning) return; // 連打防止
       setStopwatchState((prev) => ({
         ...prev,
@@ -65,7 +57,7 @@ import React, {
       }));
     }, [stopwatchState.isRunning]);
   
-    const stopStopwatch = useCallback(() => {
+    const stopStopwatch = React.useCallback(() => {
       if (!stopwatchState.isRunning) return;
       const stopTime = Date.now();
       setStopwatchState((prev) => ({
@@ -75,7 +67,7 @@ import React, {
       }));
     }, [stopwatchState.isRunning, stopwatchState.startTime]);
   
-    const resetStopwatch = useCallback(() => {
+    const resetStopwatch = React.useCallback(() => {
       setStopwatchState({
         isRunning: false,
         startTime: 0,
@@ -84,7 +76,7 @@ import React, {
     }, []);
   
     // isRunning === true の時だけ、一定間隔で再描画を促す → currentTime をリアルタイムに更新
-    useEffect(() => {
+    React.useEffect(() => {
       if (stopwatchState.isRunning) {
         intervalRef.current = setInterval(() => {
           setStopwatchState((prev) => ({ ...prev })); // state を更新して再描画
