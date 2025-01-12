@@ -5,16 +5,12 @@ import TaskArea from "./components/Areas/TaskArea";
 import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
-import {useWindowSize} from "./hooks/useWindowSize";
 import {test_news, test_sessions, test_tasks} from "./testData";
 
-
 function App(): React.ReactElement {
-    const {windowWidth,windowHeight} = useWindowSize();
-    console.log(windowWidth,windowHeight);
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
-            colorPalette={"orange"}
+             colorPalette={"orange"}
         >
             <SideBar>
                 <Grid

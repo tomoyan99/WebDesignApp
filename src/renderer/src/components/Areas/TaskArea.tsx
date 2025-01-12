@@ -4,13 +4,17 @@ import {Box, For, HStack, Text, VStack} from "@chakra-ui/react";
 import {StopWatch} from "../Dialogs/StopWatch";
 import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
+import {useStopwatchContext} from "../../context/StopwatchContext";
 
-export type TaskProps = {
+export interface TaskProps{
     date_unix:number,
-    content:string
-};
+    content:string,
+    disabled?:boolean,
+}
 
 export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
+    const {isRunning} = useStopwatchContext();
+
     return(
         <Area>
             <AreaHeader>タスク</AreaHeader>
@@ -35,7 +39,11 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                                             key={`TaskArea_Task${index}`}
                                         >
                                             <StopWatch task={item.content}>
-                                                <Task date_unix={item.date_unix} content={item.content}/>
+                                                <Task
+                                                    date_unix={item.date_unix}
+                                                    content={item.content}
+                                                    disabled={isRunning}
+                                                />
                                             </StopWatch>
                                         </Box>
                                     );
@@ -90,6 +98,7 @@ function Task(data:TaskProps){
                 _active={{
                 }}
                 colorPalette={"orange"}
+                disabled={data.disabled}
             >
                 <VStack gap={1} w={"80px"}>
                     <Text>{today}</Text>

@@ -15,6 +15,7 @@ import {
     HTMLChakraProps,
 } from "@chakra-ui/react";
 import React from "react";
+import Draggable from "react-draggable";
 
 namespace MyDialog {
 
@@ -38,16 +39,20 @@ namespace MyDialog {
 
     export function Content(props:DialogContentProps&HTMLChakraProps<"div">) {
         const {children, ...other} = props;
+        const nodeRef = React.useRef<HTMLDivElement>(null);
+
         return(
-            <DialogContent {...other}>
-                {children}
-                <DialogCloseTrigger
-                    size={"xl"}
-                    _hover={{
-                        bg:"blackAlpha.200"
-                    }}
-                />
-            </DialogContent>
+            <Draggable nodeRef={nodeRef}>
+                <DialogContent {...other} ref={nodeRef}>
+                    {children}
+                    <DialogCloseTrigger
+                        size={"xl"}
+                        _hover={{
+                            bg:"blackAlpha.200"
+                        }}
+                    />
+                </DialogContent>
+            </Draggable>
         )
     }
 

@@ -1,73 +1,83 @@
 import MyDialog from "../MyDialog";
-import {Box} from "@chakra-ui/react";
+import {Box, Portal} from "@chakra-ui/react";
 import * as React from "react";
 import { Button } from "../../ui/button";
+import { useStopwatchContext } from "../../context/StopwatchContext";
+import {formatStopWatchTime} from "../../util/formatStopWatchTime";
+import {OpenChangeDetails} from "@zag-js/dialog";
+import StopwatchDisplay from "./StopwatchDisplay";
+import {DialogActionTrigger} from "../../ui/dialog";
+
 
 export function StopWatch(props:{children?:React.ReactNode,task?:string}) {
+    // 開いているダイアログ、開いていないダイアログを区別
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+    // const [isDisplayOpen, setIsDisplayOpen] = React.useState(false);
     // ストップウォッチの状態を管理
-    const [time, setTime] = React.useState(0); // 時間（ミリ秒）
-    const [isRunning, setIsRunning] = React.useState(false); // 動作中かどうか
+    const {
+        currentTime,
+        isRunning,
+        startStopwatch,
+        resetStopwatch,
+        setIsMinimum,
+        isMinimum
+    } = useStopwatchContext();
 
-    // 時間を更新するエフェクト
-    React.useEffect(() => {
-        let timer: NodeJS.Timeout | null = null;
-        if (isRunning) {
-            timer = setInterval(() => {
-                setTime((prevTime) => prevTime + 10); // 10ミリ秒ごとに加算
-            }, 10);
-        } else if (timer) {
-            clearInterval(timer);
-        }
-        return () => {
-            if (timer) clearInterval(timer);
-        };
-    }, [isRunning]);
-
-    // 時間のフォーマット
-    const formatTime = (time: number) => {
-        const milliseconds = time % 1000;
-        const seconds = Math.floor((time / 1000) % 60);
-        const minutes = Math.floor((time / 60000) % 60);
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}:${String(
-            Math.floor(milliseconds / 10)
-        ).padStart(2, "0")}`;
-    };
-
-    // 開始・停止・リセット操作
-    const start = () => setIsRunning(true);
-    const stop = () => setIsRunning(false);
-    const reset = () => {
-        setIsRunning(false);
-        setTime(0);
+    // ストップウォッチ終了処理
+    const finishStopwatch = ()=>{
+        // setIsMinimum(false);
+        resetStopwatch((currentTime)=>{
+            alert(currentTime)
+        });
     };
 
     return (
-        <MyDialog.Root closeOnInteractOutside={false}>
-            <MyDialog.Trigger>
-                <Box>{props.children}</Box>
-            </MyDialog.Trigger>
-            <MyDialog.Content>
-                <MyDialog.Header>ストップウォッチ</MyDialog.Header>
-                <MyDialog.Body>
-                    <h2 style={{ fontSize: "2rem", textAlign: "center" }}>{formatTime(time)}</h2>
-                    <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "1rem" }}>
-                        {isRunning ? (
-                            <Button onClick={stop} variant="outline" colorScheme="red">
-                                停止
-                            </Button>
-                        ) : (
-                            <Button onClick={start} variant="solid" colorScheme="green">
-                                開始
-                            </Button>
-                        )}
-                        <Button onClick={reset} variant="outline" colorScheme="blue">
-                            リセット
-                        </Button>
-                    </div>
-                    {props.task && <p style={{ marginTop: "1rem" }}>タスク: {props.task}</p>}
-                </MyDialog.Body>
-                <MyDialog.Footer></MyDialog.Footer>
-            </MyDialog.Content>
-        </MyDialog.Root>
+        <>
+            {isRunning && isMinimum && isDialogOpen &&
+                <Portal>
+                    <StopwatchDisplay
+                        time={formatStopWatchTime(currentTime)}
+                        task={props.task}
+                        onFinish={finishStopwatch}
+                    />
+                </Portal>
+            }
+            <MyDialog.Root
+                closeOnInteractOutside={false}
+                onOpenChange={(details: OpenChangeDetails)=>{
+                    setIsDialogOpen(!details.open);
+                    setIsMinimum(!details.open);
+                }}
+            >
+                <MyDialog.Trigger>
+                    <Box>{props.children}</Box>
+                </MyDialog.Trigger>
+                <MyDialog.Content>
+                    <MyDialog.Header>ストップウォッチ</MyDialog.Header>
+                    <MyDialog.Body>
+                        <h2 style={{ fontSize: "2rem", textAlign: "center" }}>
+                            {formatStopWatchTime(currentTime)}
+                        </h2>
+                        {props.task && <p style={{ marginTop: "1rem" }}>タスク: {props.task}</p>}
+                    </MyDialog.Body>
+                    <MyDialog.Footer>
+                        <div style={{display: "flex", justifyContent: "center", gap: "10px", marginTop: "1rem"}}>
+                            {isRunning ? (
+                                <DialogActionTrigger>
+                                    <Button onClick={finishStopwatch} variant="outline" colorPalette="red">
+                                        終了
+                                    </Button>
+                                </DialogActionTrigger>
+
+                            ) : (
+                                <Button onClick={startStopwatch} variant="solid" colorPalette="green">
+                                    開始
+                                </Button>
+                            )}
+                        </div>
+                    </MyDialog.Footer>
+                </MyDialog.Content>
+            </MyDialog.Root>
+        </>
     );
 }
