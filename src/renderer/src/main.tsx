@@ -6,6 +6,7 @@ import '@fontsource/zen-maru-gothic';
 import {createTheme,ThemeProvider} from "@mui/material";
 import {createSystem, defaultConfig} from "@chakra-ui/react";
 import { StopwatchProvider } from "./context/StopwatchContext";
+import {DialogsProvider} from "./context/DialogsContext";
 
 const theme = createTheme({
     typography:{
@@ -28,7 +29,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <ThemeProvider theme={theme}>
             <Provider system={system}>
             <StopwatchProvider>
-                <App/>
+                <DialogsProvider>
+                    <App/>
+                </DialogsProvider>
             </StopwatchProvider>
             </Provider>
         </ThemeProvider>

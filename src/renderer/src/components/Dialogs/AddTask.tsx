@@ -1,15 +1,18 @@
 import MyDialog from "../MyDialog";
-import {Box, Text} from "@chakra-ui/react";
-import * as React from "react";
+import {Text} from "@chakra-ui/react";
 
-export function AddTask(props:{children?:React.ReactNode}) {
+interface Props {
+    closeDialog: () => void;
+    isOpen: boolean;
+}
+
+export function AddTask(props:Props) {
     return(
-        <MyDialog.Root closeOnInteractOutside={false}>
-            <MyDialog.Trigger>
-                <Box>
-                    {props.children}
-                </Box>
-            </MyDialog.Trigger>
+        <MyDialog.Root
+            open={props.isOpen}
+            closeOnInteractOutside={false}
+            onOpenChange={props.closeDialog}
+        >
             <MyDialog.Content>
                 <MyDialog.Header>
                     たすくついか

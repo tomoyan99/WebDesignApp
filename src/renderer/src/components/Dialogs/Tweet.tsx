@@ -1,12 +1,17 @@
 import MyDialog from "../MyDialog";
-import {Box, Textarea,Text} from "@chakra-ui/react";
+import {Textarea,Text} from "@chakra-ui/react";
 import * as React from "react";
 import { Button } from "../../ui/button";
 import {DialogActionTrigger} from "../../ui/dialog";
 import convUnixToIso from "../../util/convUnixToIso";
 import {PostInfo} from "../Areas/SessionArea";
 
-export function Tweet(props:{children?:React.ReactNode}) {
+interface Props {
+    closeDialog: () => void;
+    isOpen: boolean;
+}
+
+export function Tweet(props:Props) {
     const [value, setValue] = React.useState("");
     const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(e.target.value);
@@ -28,15 +33,12 @@ export function Tweet(props:{children?:React.ReactNode}) {
     const ref = React.useRef<HTMLTextAreaElement>(null);
     return(
         <MyDialog.Root
+            open={props.isOpen}
             closeOnInteractOutside={false}
             initialFocusEl={() => ref.current}
             size={"lg"}
+            onOpenChange={props.closeDialog}
         >
-            <MyDialog.Trigger>
-                <Box>
-                    {props.children}
-                </Box>
-            </MyDialog.Trigger>
             <MyDialog.Content colorPalette={"orange"} bg={"orange.100"}>
                 <MyDialog.Header>
                     <Text textStyle={"2xl"}>

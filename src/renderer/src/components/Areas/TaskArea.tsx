@@ -1,14 +1,14 @@
 import {Area,AreaHeader,AreaBody} from "../Area";
 import {Button} from "../../ui/button";
 import {Box, For, HStack, Text, VStack} from "@chakra-ui/react";
-import {StopWatch} from "../Dialogs/StopWatch";
 import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
+import {useMyDialog} from "../../context/DialogsContext";
 
 export interface TaskProps{
     date_unix:number,
-    content:string,
+    task:string,
     disabled?:boolean,
 }
 
@@ -38,13 +38,11 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                                             transition={"0.3s"}
                                             key={`TaskArea_Task${index}`}
                                         >
-                                            <StopWatch task={item.content}>
-                                                <Task
-                                                    date_unix={item.date_unix}
-                                                    content={item.content}
-                                                    disabled={isRunning}
-                                                />
-                                            </StopWatch>
+                                            <Task
+                                                date_unix={item.date_unix}
+                                                task={item.task}
+                                                disabled={isRunning}
+                                            />
                                         </Box>
                                     );
                                 }}
@@ -64,10 +62,11 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
 
 
 function Task(data:TaskProps){
+    const { openDialog } = useMyDialog();
+
     const nowDate = new Date(data.date_unix);
     const month = `${nowDate.getMonth() + 1}`.padStart(2, "0");
     const date = `${nowDate.getDate()}`.padStart(2, "0");
-
     const today = `${month}月${date}日`;
 
     return (
@@ -99,6 +98,7 @@ function Task(data:TaskProps){
                 }}
                 colorPalette={"orange"}
                 disabled={data.disabled}
+                onClick={() => openDialog('StopWatch', { task: data.task })}
             >
                 <VStack gap={1} w={"80px"}>
                     <Text>{today}</Text>
@@ -107,7 +107,7 @@ function Task(data:TaskProps){
                         whiteSpace={"nowrap"}
                         overflowX={"hidden"}
                         textOverflow={"ellipsis"}
-                    >{data.content}</Text>
+                    >{data.task}</Text>
                 </VStack>
             </Button>
         </>

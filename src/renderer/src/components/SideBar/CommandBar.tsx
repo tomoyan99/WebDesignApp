@@ -1,15 +1,12 @@
 import {Box, HTMLChakraProps, IconButton, IconButtonProps, VStack} from "@chakra-ui/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import Divider from "@mui/material/Divider";
-import {StopWatch} from "../Dialogs/StopWatch";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
-import {AddLog} from "../Dialogs/AddLog";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import {AddTask} from "../Dialogs/AddTask";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import {Tweet} from "../Dialogs/Tweet";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import {useTheme} from "@mui/material/styles";
+import {useMyDialog} from "../../context/DialogsContext";
 
 interface AppBarProps extends HTMLChakraProps<"div"> {
     open?: boolean;
@@ -52,6 +49,8 @@ function AppBar({ open = false, drawerWidth, children,isVisible=false }:AppBarPr
 
 
 export function CommandBar(props:CommandBarProps) {
+    const { openDialog } = useMyDialog();
+
     const sideBarIconButtonStyle :IconButtonProps ={
         size:"xl",
         textStyle:"xl",
@@ -78,32 +77,24 @@ export function CommandBar(props:CommandBarProps) {
 
                 {/*サイドバー*/}
                 {/*ストップウォッチ*/}
-                <StopWatch>
-                    <IconButton {...sideBarIconButtonStyle}>
-                        <TimerOutlinedIcon/>
-                    </IconButton>
-                </StopWatch>
+                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("StopWatch")}>
+                    <TimerOutlinedIcon/>
+                </IconButton>
 
                 {/*記録*/}
-                <AddLog>
-                    <IconButton {...sideBarIconButtonStyle}>
-                        <EditNoteIcon/>
-                    </IconButton>
-                </AddLog>
+                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("AddLog")}>
+                    <EditNoteIcon/>
+                </IconButton>
 
                 {/*タスクの追加*/}
-                <AddTask>
-                    <IconButton {...sideBarIconButtonStyle}>
-                        <ChatBubbleIcon/>
-                    </IconButton>
-                </AddTask>
+                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("AddTask")}>
+                    <ChatBubbleIcon/>
+                </IconButton>
 
                 {/*つぶやき*/}
-                <Tweet>
-                    <IconButton {...sideBarIconButtonStyle}>
-                        <AddTaskIcon/>
-                    </IconButton>
-                </Tweet>
+                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("Tweet")}>
+                    <AddTaskIcon/>
+                </IconButton>
             </VStack>
         </AppBar>
     )

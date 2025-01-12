@@ -5,9 +5,15 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import {Text} from "@chakra-ui/react";
 
-export function ListButton(props:{name:string,icon:React.ReactElement}) {
+interface Props {
+    name:string
+    icon:React.ReactElement
+    onClick?:() => void
+}
+
+export function ListButton(props:Props) {
     return (
-        <ListItem disablePadding>
+        <ListItem disablePadding onClick={props.onClick}>
             <ListItemButton>
                 <ListItemIcon>
                     {props.icon}

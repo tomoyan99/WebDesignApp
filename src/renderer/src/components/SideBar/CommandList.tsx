@@ -4,52 +4,30 @@ import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-import {StopWatch} from "../Dialogs/StopWatch";
-import {AddLog} from "../Dialogs/AddLog";
-import {AddTask} from "../Dialogs/AddTask";
-import {Tweet} from "../Dialogs/Tweet";
 import {ListButton} from "./ListButton";
+import {DialogType, useMyDialog} from "../../context/DialogsContext";
 
 export function CommandList() {
+    const { openDialog } = useMyDialog();
     return (
         <List>
             <For
                 each={[
-                    { name: "ストップウォッチ", icon:<TimerOutlinedIcon/>,dialog:"stopwatch"},
-                    { name: "記録", icon:<EditNoteIcon/>,dialog:"log"},
-                    { name: "つぶやき", icon:<ChatBubbleIcon/>,dialog:"tweet"},
-                    { name: "タスクを追加", icon:<AddTaskIcon/>,dialog:"task"},
+                    { name: "ストップウォッチ", icon:<TimerOutlinedIcon/>,dialog:"StopWatch"},
+                    { name: "記録", icon:<EditNoteIcon/>,dialog:"AddLog"},
+                    { name: "つぶやき", icon:<ChatBubbleIcon/>,dialog:"Tweet"},
+                    { name: "タスクを追加", icon:<AddTaskIcon/>,dialog:"AddTask"},
                 ]}
             >
                 {(item) =>{
-                    switch (item.dialog) {
-                        case "stopwatch":
-                            return (
-                                <StopWatch key={"StopWatch_List"}>
-                                    <ListButton name={item.name} icon={item.icon}/>
-                                </StopWatch>
-                            );
-                        case "log":
-                            return (
-                                <AddLog key={"AddLog_List"}>
-                                    <ListButton name={item.name} icon={item.icon}/>
-                                </AddLog>
-                            );
-                        case "task":
-                            return (
-                                <AddTask key={"AddTask_List"}>
-                                    <ListButton name={item.name} icon={item.icon}/>
-                                </AddTask>
-                            );
-                        case "tweet":
-                            return (
-                                <Tweet key={"AddTweet_List"}>
-                                    <ListButton name={item.name} icon={item.icon}/>
-                                </Tweet>
-                            );
-                        default:
-                            return (<></>);
-                    }
+                    return (
+                        <ListButton
+                            key={`${item.dialog}_List`}
+                            name={item.name}
+                            icon={item.icon}
+                            onClick={()=>openDialog(item.dialog as DialogType)}
+                        />
+                    );
                 }}
             </For>
         </List>

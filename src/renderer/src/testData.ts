@@ -53,11 +53,11 @@ export const test_sessions :Sessions[] = [
 export const test_tasks:TaskProps[] = [
     {
         date_unix:1234567768,
-        content:"食べる"
+        task:"食べる"
     },
     {
         date_unix:1234567768,
-        content:"食べる"
+        task:"食べる"
     },
 ];
 

@@ -6,12 +6,30 @@ import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
 import {test_news, test_sessions, test_tasks} from "./testData";
+import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
+import {formatStopWatchTime} from "./util/formatStopWatchTime";
+import {useStopwatchContext} from "./context/StopwatchContext";
 
 function App(): React.ReactElement {
+    const {
+        isRunning,
+        isMinimum,
+        currentTime,
+        task,
+        resetStopwatch
+    } = useStopwatchContext();
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
              colorPalette={"orange"}
         >
+            {
+                isRunning && isMinimum &&
+                <StopwatchDisplay
+                    time={formatStopWatchTime(currentTime)}
+                    task={task}
+                    onFinish={resetStopwatch}
+                />
+            }
             <SideBar>
                 <Grid
                     h="100%"
