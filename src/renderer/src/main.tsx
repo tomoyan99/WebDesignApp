@@ -7,8 +7,8 @@ import {createTheme,ThemeProvider} from "@mui/material";
 import {createSystem, defaultConfig} from "@chakra-ui/react";
 import { StopwatchProvider } from "./context/StopwatchContext";
 import {DialogsProvider} from "./context/DialogsContext";
-import {TaskProvider, useTaskContext} from "./context/TaskContext";
-import {test_tasks} from "./testData";
+import {TaskProvider} from "./context/TaskContext";
+import TaskCreate from "./test/tasktest";
 
 const theme = createTheme({
     typography:{
@@ -44,7 +44,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <ThemeProvider theme={theme}>
             <Provider system={system}>
                 <MyProviders>
-                    <App/>
+                    <TaskCreate/>
+                    {/*<App/>*/}
                 </MyProviders>
             </Provider>
         </ThemeProvider>
