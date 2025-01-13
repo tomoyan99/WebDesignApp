@@ -5,16 +5,22 @@ import TaskArea from "./components/Areas/TaskArea";
 import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
+import {test_news, testSessions, testTasks} from "./testData";
 import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
 import {useTaskContext} from "./context/TaskContext";
+import {useSessionContext} from "./context/SessionContext";
 
-/* --------------------------------------------------
-   ここは大きなUI全体を構成しています。
-   りれき(セッション履歴)のデータは 
-   <SessionArea/> 側でDBから取得するように修正してあります。
--------------------------------------------------- */
+function DataFetcher(){
+    const {addTask} = useTaskContext();
+    const {initializeSession} = useSessionContext();
+    useEffect(() => {
+        addTask(testTasks);
+        initializeSession(testSessions);
+    }, []);
+}
+
 
 function App(): React.ReactElement {
     const {
@@ -24,10 +30,8 @@ function App(): React.ReactElement {
         finishStopwatch,
     } = useStopwatchContext();
 
-    const { taskNow } = useTaskContext();
-
-    // 特にApp自体では何も取得しない。SessionAreaなど各コンポーネントがデータを取得する。
-    // UIレイアウトのみ行う
+    const {taskNow} = useTaskContext();
+    DataFetcher();
 
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
@@ -50,19 +54,14 @@ function App(): React.ReactElement {
                     pt={8}
                     gap={3}
                 >
-                    <GridItem colSpan={4}>
+                    <GridItem  colSpan={4}>
                         <TaskArea/>
                     </GridItem>
-                    <GridItem colSpan={2}>
+                    <GridItem  colSpan={2}>
                         <SessionArea/>
                     </GridItem>
-                    <GridItem colSpan={2}>
-                        <NewsArea news={[]} />
-                        {/* 
-                          既存の NewsArea はダミーとして機能しています。
-                          もし DB のツイートをここで流用するなら 
-                          変更することも可能です。
-                        */}
+                    <GridItem  colSpan={2}>
+                        <NewsArea　news={test_news} />
                     </GridItem>
                 </Grid>
             </SideBar>
