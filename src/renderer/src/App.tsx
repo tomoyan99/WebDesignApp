@@ -5,21 +5,19 @@ import TaskArea from "./components/Areas/TaskArea";
 import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
-import {test_news, test_sessions, test_tasks} from "./testData";
+import {test_news, testSessions, testTasks} from "./testData";
 import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
 import {useTaskContext} from "./context/TaskContext";
+import {useSessionContext} from "./context/SessionContext";
 
 function DataFetcher(){
-    const {addTask,taskData} = useTaskContext();
+    const {addTask} = useTaskContext();
+    const {initializeSession} = useSessionContext();
     useEffect(() => {
-        let ignore = false;
-        if(!ignore) addTask(test_tasks);
-        console.log(taskData);
-        return () => {
-            ignore = true;
-        };
+        addTask(testTasks);
+        initializeSession(testSessions);
     }, []);
 }
 
@@ -32,15 +30,8 @@ function App(): React.ReactElement {
         finishStopwatch,
     } = useStopwatchContext();
 
-    const {addTask,taskNow} = useTaskContext();
-
-    useEffect(() => {
-        let ignore = false;
-        if(!ignore) addTask(test_tasks);
-        return () => {
-            ignore = true;
-        };
-    }, []);
+    const {taskNow} = useTaskContext();
+    DataFetcher();
 
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
@@ -67,7 +58,7 @@ function App(): React.ReactElement {
                         <TaskArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
-                        <SessionArea sessions={test_sessions}/>
+                        <SessionArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
                         <NewsArea　news={test_news} />

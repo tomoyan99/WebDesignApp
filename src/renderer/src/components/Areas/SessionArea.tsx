@@ -9,7 +9,7 @@ import {
 } from "../../ui/timeline"
 import {FaRegPenToSquare} from "react-icons/fa6";
 import {LuPause, LuPlay} from "react-icons/lu";
-import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
+import {Box, Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
 import convUnixToIso from "../../util/convUnixToIso";
 import {Avatar} from "../../ui/avatar";
 import calcElapsedTime from "../../util/calcElapsedTime";
@@ -23,46 +23,47 @@ import {
     MySessionItemEnd,
     MySessionItemPost,
     MySessionItemStart,
-    MySessions
+    useSessionContext
 } from "../../context/SessionContext";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
-export default function SessionArea({sessions}:{sessions:MySessions}){
+export default function SessionArea(){
+    const {sessionData} = useSessionContext();
     return(
         <Area>
             <AreaHeader>りれき</AreaHeader>
-            {sessions.length>0
+            {sessionData.length>0
                 ? <VStack overflowY={"auto"} gap={3}>
-                    <For each={sessions}>
-                        {(session, index)=>(
+                    <For each={sessionData}>
+                        {(session, sessionIndex)=>(
                             <AreaBody
-                                key={`LogArea_TimeLine_${index}`}
+                                key={`LogArea_TimeLine_${sessionIndex}`}
                                 p={6}
                                 pb={0}
                                 h={"fit-content"}
                             >
-                                <TimelineRoot  size={"lg"} maxW="400px">
-                                    <For each={session}>
-                                        {(sessionItem,index)=>(
-                                            <>
+                                <TimelineRoot size={"lg"} maxW="400px">
+                                    <For each={session} key={`For_${sessionIndex}`}>
+                                        {(sessionItem,sessionItemIndex)=>(
+                                            <Box key={`Box_SessionItem_${sessionItemIndex}`}>
                                                 {sessionItem.type === "start" &&
                                                     <TimeLineStart
-                                                        key={`Start_${index}`}
+                                                        key={`Start_${sessionItemIndex}`}
                                                         {...sessionItem}
                                                     />}
                                                 {sessionItem.type === "post" &&
                                                     <TimeLinePost
-                                                        key={`Topic_${index}`}
+                                                        key={`Topic_${sessionItemIndex}`}
                                                         {...sessionItem}
                                                     />
                                                 }
                                                 {sessionItem.type === "end" &&
                                                     <TimeLineEnd
-                                                        key={`End_${index}`}
+                                                        key={`End_${sessionItemIndex}`}
                                                         {...sessionItem}
                                                     />}
-                                            </>
+                                            </Box>
                                         )}
                                     </For>
                                 </TimelineRoot>

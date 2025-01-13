@@ -14,7 +14,7 @@ interface TaskContextProps {
     taskData: TaskItem[]; // タスクの配列
     taskList: string[]; // タスク名のリスト
     taskNow: TaskItem | null; // 現在選択されているタスク
-    addTask: (newTask: TaskItem[]) => boolean; // タスク追加関数
+    addTask: (newTask: TaskItemNoHush|TaskItemNoHush[]) => boolean; // タスク追加関数
     taskNowHandler: (task:TaskItem|null)=>void; // 現在選択されたタスクを設定する関数
 }
 
