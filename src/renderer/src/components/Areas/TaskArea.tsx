@@ -1,8 +1,8 @@
-import {Area, AreaBody, AreaHeader} from "../Area";
+import {Area,AreaHeader,AreaBody} from "../Area";
 import {Button} from "../../ui/button";
 import {Box, For, HStack, Text, VStack} from "@chakra-ui/react";
 import {EmptyState} from "../../ui/empty-state";
-import {TbMoodSadSquint} from "react-icons/tb";
+import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
 import {useMyDialog} from "../../context/DialogsContext";
 import {generateTaskHash, TaskItem, useTaskContext} from "../../context/TaskContext";
@@ -38,8 +38,7 @@ export default function TaskArea() {
                                             <TaskButton
                                                 date_unix={item.date_unix}
                                                 task={item.task}
-                                                disabled={isRunning}
-                                            />
+                                                disabled={isRunning} task_hush={""}                                            />
                                         </Box>
                                     );
                                 }}
