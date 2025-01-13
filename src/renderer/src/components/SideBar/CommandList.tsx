@@ -25,7 +25,7 @@ export function CommandList() {
                             key={`${item.dialog}_List`}
                             name={item.name}
                             icon={item.icon}
-                            onClick={()=>openDialog(item.dialog as DialogType)}
+                            onClick={()=>openDialog(item.dialog as DialogType,{task:""})}
                         />
                     );
                 }}

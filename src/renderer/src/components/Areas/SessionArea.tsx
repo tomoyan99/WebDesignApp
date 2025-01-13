@@ -8,13 +8,13 @@ import {
     TimelineTitle
 } from "../../ui/timeline"
 import {FaRegPenToSquare} from "react-icons/fa6";
-import {LuPause, LuPlay} from "react-icons/lu";
-import {Box, Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
+import {LuPlay} from "react-icons/lu";
+import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
 import convUnixToIso from "../../util/convUnixToIso";
 import {Avatar} from "../../ui/avatar";
 import calcElapsedTime from "../../util/calcElapsedTime";
 import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
-import React from "react";
+import React,{Fragment} from "react";
 import {EmptyState} from "../../ui/empty-state";
 import {TbMoodSadSquint} from "react-icons/tb";
 import todo from "../../assets/todo.png"
@@ -25,6 +25,8 @@ import {
     MySessionItemStart,
     useSessionContext
 } from "../../context/SessionContext";
+import { FaCheck } from "react-icons/fa";
+
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
@@ -46,7 +48,7 @@ export default function SessionArea(){
                                 <TimelineRoot size={"lg"} maxW="400px">
                                     <For each={session} key={`For_${sessionIndex}`}>
                                         {(sessionItem,sessionItemIndex)=>(
-                                            <Box key={`Box_SessionItem_${sessionItemIndex}`}>
+                                            <Fragment key={`fragment_${sessionItemIndex}`}>
                                                 {sessionItem.type === "start" &&
                                                     <TimeLineStart
                                                         key={`Start_${sessionItemIndex}`}
@@ -63,7 +65,7 @@ export default function SessionArea(){
                                                         key={`End_${sessionItemIndex}`}
                                                         {...sessionItem}
                                                     />}
-                                            </Box>
+                                            </Fragment>
                                         )}
                                     </For>
                                 </TimelineRoot>
@@ -97,7 +99,7 @@ function TimeLineStart(props:MySessionItemStart){
                 <TimelineTitle textStyle={"sm"}>
                     {props.task && `[${props.task}]`}
                     {props.task && <br/>}
-                    タスクかいし！
+                    {props.message}
                 </TimelineTitle>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date_unix)}
@@ -111,15 +113,16 @@ function TimeLineEnd(props:MySessionItemEnd){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
-                <LuPause/>
+                <FaCheck/>
             </TimelineConnector>
             <TimelineContent >
                 <TimelineTitle textStyle="sm">
                     {props.task && `[${props.task}]`}
                     {props.task && <br/>}
-                    タスクしゅーりょー！
+                    {props.message}
+                    <br/>
                 </TimelineTitle>
-                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
+                <Text textStyle={"sm"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date_unix)}
                 </TimelineDescription>
@@ -135,7 +138,7 @@ function TimeLinePost(props:MySessionItemPost) {
                 <FaRegPenToSquare/>
             </TimelineConnector>
             <TimelineContent>
-                <TopicCard
+                <PostCard
                     message={props.message}
                     date={props.date_unix}
                     textStyle={"md"}
@@ -192,7 +195,7 @@ function ReplyAccordion(props:MyReplyInfo){
                         : (<Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text>)}
                 </AccordionItemTrigger>
                 <AccordionItemContent pt={1} pb={1}>
-                    <TopicCard
+                    <PostCard
                         message={props.message}
                         date={props.date_unix}
                         pt={0}
@@ -204,7 +207,7 @@ function ReplyAccordion(props:MyReplyInfo){
     )
 }
 
-function TopicCard(props:CardBodyProps&{message:string,date:number}) {
+function PostCard(props:CardBodyProps&{message:string,date:number}) {
     const {message,date,color,...other} = props;
     return (
         <Card.Root width="100%" borderWidth={0}>

@@ -29,14 +29,13 @@ export function StopWatch(props: Props) {
     const {startSession,endSession} = useSessionContext();
 
     const handleStopwatchStart = ()=>{
-        startSession("スタート",taskNow?.task);
+        startSession("たすくすたーと！",taskNow?.task);
         startStopwatch();
     };
     const handleStopwatchFinish = ()=>{
-        endSession("フィニッシュ");
+        endSession("たすくしゅーりょー！");
         finishStopwatch();
     };
-
 
     return (
         <>
@@ -72,7 +71,7 @@ export function StopWatch(props: Props) {
                                     variant="outline"
                                     colorPalette="red"
                                 >
-                                    フィニッシュ
+                                    ふぃにっしゅ
                                 </Button>
                             </DialogActionTrigger>
                         ) : (
@@ -82,7 +81,7 @@ export function StopWatch(props: Props) {
                                 variant="solid"
                                 colorPalette="green"
                             >
-                                スタート
+                                すたーと
                             </Button>
                         )}
                     </MyDialog.Footer>
@@ -110,7 +109,7 @@ function TaskSelect(){
             disabled={isRunning}
             defaultValue={[taskNow?.task_hush]}
             onValueChange={(details)=>{
-                const taskTarget = taskData.filter((task)=>task.task_hush === details.value)[0];
+                const taskTarget = taskData.filter((task)=>task.task_hush === details.value[0])[0];
                 taskNowHandler(taskTarget);
             }}
         >
@@ -141,8 +140,4 @@ function TaskSelect(){
             </SelectContent>
         </SelectRoot>
     )
-}
-
-function useCallback() {
-    throw new Error("Function not implemented.");
 }

@@ -11,16 +11,13 @@ import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
 import {useTaskContext} from "./context/TaskContext";
 import {useSessionContext} from "./context/SessionContext";
-
 function DataFetcher(){
-    const {addTask} = useTaskContext();
     const {initializeSession} = useSessionContext();
     useEffect(() => {
         // addTask(testTasks);
         // initializeSession(testSessions);
     }, []);
 }
-
 
 function App(): React.ReactElement {
     const {
@@ -33,6 +30,13 @@ function App(): React.ReactElement {
     const {taskNow} = useTaskContext();
     DataFetcher();
 
+    const {endSession} = useSessionContext();
+    const handleStopwatchFinish = ()=>{
+        endSession("たすくしゅーりょー！");
+        finishStopwatch();
+    };
+
+
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
              colorPalette={"orange"}
@@ -42,7 +46,7 @@ function App(): React.ReactElement {
                 <StopwatchDisplay
                     time={formatStopWatchTime(currentTime)}
                     task={taskNow?.task}
-                    onFinish={finishStopwatch}
+                    onFinish={handleStopwatchFinish}
                 />
             }
             <SideBar>

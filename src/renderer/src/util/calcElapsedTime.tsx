@@ -1,10 +1,10 @@
 
 // UNIXタイムスタンプの差分（秒単位）を受け取り
 function calcElapsedTime(elapsed_unix:number) {
-    const timestamp = elapsed_unix;
+    const timestamp = elapsed_unix/1000;
     const hours = Math.floor(timestamp / 3600);
     const minutes = Math.floor((timestamp % 3600) / 60);
-    const seconds = timestamp % 60;
+    const seconds = Math.floor(timestamp % 60);
 
     let timeString = "";
     if (hours > 1) {
