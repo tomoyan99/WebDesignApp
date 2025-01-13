@@ -1,3 +1,4 @@
+// /src/renderer/src/components/Dialogs/AddTask.tsx
 import MyDialog from "../MyDialog";
 import {Text} from "@chakra-ui/react";
 
