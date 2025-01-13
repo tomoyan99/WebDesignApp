@@ -64,6 +64,11 @@ export function AddTask(props: Props) {
                     bg="white"
                     borderColor="orange.200"
                     _hover={{ borderColor: "orange.300" }}
+                    color={"orange.950"}
+                    fontWeight={{
+                      base:"bold",
+                      _placeholder:"normal",
+                    }}
                   />
                 </Field>
                 {/* 期限入力 */}

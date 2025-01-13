@@ -79,8 +79,8 @@ export function SideBar({children}:{children:React.ReactNode}) {
                 open={open}
             >
                 <DrawerHeader>
-                    <Text textStyle={"2xl"} w={"100%"} pl={"1em"}>
-                        アプリ名？
+                    <Text textStyle={"xl"} fontWeight={"bold"} w={"100%"} pl={"1em"}>
+                        タスク DE トドりん！
                     </Text>
                     <IconButton
                         size={"lg"}
