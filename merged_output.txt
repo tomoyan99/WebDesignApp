@@ -169,7 +169,7 @@ if (process.contextIsolated) {
 
 
 --- src\renderer\src\App.tsx ---
-import React from "react";
+import React, {useEffect} from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react"
 import SideBar from "./components/MyDrawer";
 import TaskArea from "./components/Areas/TaskArea";
@@ -180,15 +180,39 @@ import {test_news, test_sessions, test_tasks} from "./testData";
 import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
+import {useTaskContext} from "./context/TaskContext";
+
+function DataFetcher(){
+    const {addTask,taskData} = useTaskContext();
+    useEffect(() => {
+        let ignore = false;
+        if(!ignore) addTask(test_tasks);
+        console.log(taskData);
+        return () => {
+            ignore = true;
+        };
+    }, []);
+}
+
 
 function App(): React.ReactElement {
     const {
         isRunning,
         isMinimum,
         currentTime,
-        task,
         finishStopwatch,
     } = useStopwatchContext();
+
+    const {addTask,taskNow} = useTaskContext();
+
+    useEffect(() => {
+        let ignore = false;
+        if(!ignore) addTask(test_tasks);
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
              colorPalette={"orange"}
@@ -197,7 +221,7 @@ function App(): React.ReactElement {
                 isRunning && isMinimum &&
                 <StopwatchDisplay
                     time={formatStopWatchTime(currentTime)}
-                    task={task}
+                    task={taskNow?.task}
                     onFinish={finishStopwatch}
                 />
             }
@@ -211,7 +235,7 @@ function App(): React.ReactElement {
                     gap={3}
                 >
                     <GridItem  colSpan={4}>
-                        <TaskArea tasks={test_tasks}/>
+                        <TaskArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
                         <SessionArea sessions={test_sessions}/>
@@ -232,7 +256,7 @@ export default App
 
 
 --- src\renderer\src\main.tsx ---
-import React from 'react'
+import React, {useEffect} from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import {Provider} from "./ui/provider"
@@ -241,6 +265,8 @@ import {createTheme,ThemeProvider} from "@mui/material";
 import {createSystem, defaultConfig} from "@chakra-ui/react";
 import { StopwatchProvider } from "./context/StopwatchContext";
 import {DialogsProvider} from "./context/DialogsContext";
+import {TaskProvider} from "./context/TaskContext";
+import TaskCreate from "./test/tasktest";
 
 const theme = createTheme({
     typography:{
@@ -258,15 +284,27 @@ const system = createSystem(defaultConfig, {
     },
 })
 
+// プロバイダー十把一絡げ
+function MyProviders({children}: {children: React.ReactNode}) {
+    return (
+        <TaskProvider>
+            <StopwatchProvider>
+                <DialogsProvider>
+                    {children}
+                </DialogsProvider>
+            </StopwatchProvider>
+        </TaskProvider>
+    );
+}
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider system={system}>
-            <StopwatchProvider>
-                <DialogsProvider>
+                <MyProviders>
+                    {/*<TaskCreate/>*/}
                     <App/>
-                </DialogsProvider>
-            </StopwatchProvider>
+                </MyProviders>
             </Provider>
         </ThemeProvider>
     </React.StrictMode>
@@ -276,7 +314,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 --- src\renderer\src\testData.ts ---
 import {Sessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
-import {TaskProps} from "./components/Areas/TaskArea";
+import {TaskItem} from "./context/TaskContext";
 
 export const test_sessions :Sessions[] = [
     {
@@ -326,7 +364,7 @@ export const test_sessions :Sessions[] = [
     }
 ];
 
-export const test_tasks:TaskProps[] = [
+export const test_tasks:TaskItem[] = [
     {
         date_unix:1234567768,
         task:"食べる"
@@ -335,6 +373,19 @@ export const test_tasks:TaskProps[] = [
         date_unix:1234567768,
         task:"食べる"
     },
+    {
+        date_unix:1234567768,
+        task:"食す"
+    },
+    {
+        date_unix:1234567768,
+        task:"食む"
+    },
+    {
+        date_unix:2783423840,
+        task:"食べる"
+    },
+
 ];
 
 export const test_news:string[]=[
@@ -459,7 +510,7 @@ namespace MyDialog {
             </DialogHeader>
         )
     }
-    export function Body(props:DialogBodyProps&HTMLChakraProps<"div">) {
+    export function Body(props:DialogBodyProps&React.RefAttributes<HTMLDivElement>) {
         const {children, ...other} = props;
         return(
             <DialogBody {...other}>
@@ -821,6 +872,7 @@ function TimeLineStart(props:{date:number,task?:string}){
         </TimelineItem>
     );
 }
+
 function TimeLineStop(props:{date:number,start:number,stop:number,task?:string}){
     return (
         <TimelineItem>
@@ -938,21 +990,18 @@ import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
 import {useMyDialog} from "../../context/DialogsContext";
+import {generateTaskHash, TaskItem, useTaskContext} from "../../context/TaskContext";
+import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 
-export interface TaskProps{
-    date_unix:number,
-    task:string,
-    disabled?:boolean,
-}
 
-export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
+export default function TaskArea() {
     const {isRunning} = useStopwatchContext();
-
+    const {taskData} = useTaskContext();
     return(
         <Area>
             <AreaHeader>タスク</AreaHeader>
             <AreaBody shadow={"none"} overflowX="auto">
-                {tasks.length > 0
+                {taskData.length > 0
                     ? (
                         <HStack
                             gap={4}
@@ -961,7 +1010,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                             pr={5}
                             overflowY="hidden"
                         >
-                            <For each={tasks}>
+                            <For each={taskData}>
                                 {(item,index)=>{
                                     return (
                                         <Box
@@ -971,7 +1020,7 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
                                             transition={"0.3s"}
                                             key={`TaskArea_Task${index}`}
                                         >
-                                            <Task
+                                            <TaskButton
                                                 date_unix={item.date_unix}
                                                 task={item.task}
                                                 disabled={isRunning}
@@ -994,14 +1043,11 @@ export default function TaskArea({tasks}:{tasks:TaskProps[]}) {
 }
 
 
-function Task(data:TaskProps){
+function TaskButton(data:TaskItem&{disabled:boolean}){
     const { openDialog } = useMyDialog();
-
-    const nowDate = new Date(data.date_unix);
-    const month = `${nowDate.getMonth() + 1}`.padStart(2, "0");
-    const date = `${nowDate.getDate()}`.padStart(2, "0");
-    const today = `${month}月${date}日`;
-
+    const {taskNowHandler} = useTaskContext();
+    const today = convUnixOnlyDate(data.date_unix);
+    const {disabled,...date} = data;
     return (
         <>
             <Button
@@ -1030,8 +1076,14 @@ function Task(data:TaskProps){
                 _active={{
                 }}
                 colorPalette={"orange"}
-                disabled={data.disabled}
-                onClick={() => openDialog('StopWatch', { task: data.task })}
+                disabled={disabled}
+                onClick={() => {
+                    taskNowHandler({
+                        ...date,
+                        task_hush:generateTaskHash(date)
+                    });
+                    openDialog('StopWatch')
+                }}
             >
                 <VStack gap={1} w={"80px"}>
                     <Text>{today}</Text>
@@ -1040,7 +1092,7 @@ function Task(data:TaskProps){
                         whiteSpace={"nowrap"}
                         overflowX={"hidden"}
                         textOverflow={"ellipsis"}
-                    >{data.task}</Text>
+                    >{date.task}</Text>
                 </VStack>
             </Button>
         </>
@@ -1102,14 +1154,9 @@ export function AddTask(props:Props) {
         >
             <MyDialog.Content>
                 <MyDialog.Header>
-                    たすくついか
+                    タスクついか
                 </MyDialog.Header>
                 <MyDialog.Body>
-                    <Text>
-                        ここには
-                        ダイアログの内容が
-                        入るよ
-                    </Text>
                 </MyDialog.Body>
                 <MyDialog.Footer>
 
@@ -1121,15 +1168,17 @@ export function AddTask(props:Props) {
 
 --- src\renderer\src\components\Dialogs\StopWatch.tsx ---
 import MyDialog from "../MyDialog";
-import {Heading} from "@chakra-ui/react";
+import {createListCollection, Heading,VStack} from "@chakra-ui/react";
 import { Button } from "../../ui/button";
 import { useStopwatchContext } from "../../context/StopwatchContext";
 import {formatStopWatchTime} from "../../util/formatStopWatchTime";
 import {OpenChangeDetails} from "@zag-js/dialog";
 import {DialogActionTrigger} from "../../ui/dialog";
+import {SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "../../ui/select";
+import {useTaskContext} from "../../context/TaskContext";
+import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 
 interface Props {
-    task?:string;
     closeDialog: () => void;
     isOpen: boolean;
 }
@@ -1153,35 +1202,99 @@ export function StopWatch(props: Props) {
                     props.closeDialog();
                 }}
             >
-                <MyDialog.Content>
+                <MyDialog.Content h={"450px"} bg={"orange.50"}>
                     <MyDialog.Header>ストップウォッチ</MyDialog.Header>
-                    <MyDialog.Body>
-                        <Heading size={"xl"} style={{ fontSize: "2rem", textAlign: "center" }}>
-                            {formatStopWatchTime(currentTime)}
-                        </Heading>
-                        {props.task && <p style={{ marginTop: "1rem" }}>タスク: {props.task}</p>}
+                    <MyDialog.Body pb={2} >
+                        <VStack justify="space-between" gap={4}>
+                            <Heading
+                                size={"6xl"}
+                                textAlign={"center"}
+                                letterSpacing={4}
+                                py={7}
+                            >
+                                {formatStopWatchTime(currentTime)}
+                            </Heading>
+                            <TaskSelect/>
+                        </VStack>
                     </MyDialog.Body>
-                    <MyDialog.Footer>
-                        <div style={{display: "flex", justifyContent: "center", gap: "10px", marginTop: "1rem"}}>
-                            {isRunning ? (
-                                <DialogActionTrigger asChild>
-                                    <Button onClick={finishStopwatch} variant="outline" colorPalette="red">
-                                        終了
-                                    </Button>
-                                </DialogActionTrigger>
-                            ) : (
-                                <Button onClick={()=>{
-                                    startStopwatch(props.task)
-                                }} variant="solid" colorPalette="green">
-                                    開始
+                    <MyDialog.Footer justifyContent={"center"} pb={10}>
+                        {isRunning ? (
+                            <DialogActionTrigger asChild>
+                                <Button
+                                    size={"xl"}
+                                    onClick={finishStopwatch}
+                                    variant="outline"
+                                    colorPalette="red"
+                                >
+                                    フィニッシュ
                                 </Button>
-                            )}
-                        </div>
+                            </DialogActionTrigger>
+                        ) : (
+                            <Button
+                                size={"xl"}
+                                onClick={startStopwatch}
+                                variant="solid"
+                                colorPalette="green"
+                            >
+                                スタート
+                            </Button>
+                        )}
                     </MyDialog.Footer>
                 </MyDialog.Content>
             </MyDialog.Root>
         </>
     );
+}
+
+function TaskSelect(){
+    const {taskNow,taskData,taskNowHandler} = useTaskContext();
+    const {isRunning} = useStopwatchContext();
+    const frameworks = createListCollection({
+        items: taskData.map((task) =>{
+            const today = convUnixOnlyDate(task.date_unix);
+            return {label:`[${today}] ${task.task}`,value:task.task_hush};
+        }),
+    });
+    return(
+        <SelectRoot
+            collection={frameworks}
+            size="lg"
+            width="80%"
+            colorPalette={"orange"}
+            disabled={isRunning}
+            defaultValue={[taskNow?.task_hush]}
+            onValueChange={(details)=>{
+                const taskTarget = taskData.filter((task)=>task.task_hush === details.value)[0];
+                taskNowHandler(taskTarget);
+            }}
+        >
+            <SelectLabel textStyle={"lg"}>タスク</SelectLabel>
+            <SelectTrigger
+                bg={"orange.100/60"}
+                borderWidth={1}
+                borderColor={{
+                    base:"orange.100",
+                    _focusWithin:"orange.500",
+                }}
+            >
+                <SelectValueText placeholder="タスクを選択" />
+            </SelectTrigger>
+            <SelectContent zIndex={9999} bg={"orange.100"}>
+                {frameworks.items.map((data) => (
+                        <SelectItem
+                            item={data}
+                            key={data.value}
+                            bg={{
+                                _hover:"orange.200",
+                                _selected:"orange.300"
+                            }}
+                        >
+                            {data.label}
+                        </SelectItem>
+                ))}
+            </SelectContent>
+        </SelectRoot>
+    )
 }
 
 --- src\renderer\src\components\Dialogs\StopwatchDisplay.tsx ---
@@ -1241,6 +1354,7 @@ export default function StopwatchDisplay(props:DisplayProps) {
                             base:"transparent",
                             _hover:"blackAlpha.200"
                         }}
+                        p={1}
                     >
                         <FaStop />
                     </IconButton>
@@ -1334,6 +1448,67 @@ export function Tweet(props:Props) {
         </MyDialog.Root>
     );
 }
+
+--- src\renderer\src\components\MyDatePicker\datePickerStyle.css ---
+/* styles.css */
+
+/* カレンダーの枠線と背景色 */
+.react-date-picker {
+    border: 2px solid #FFA500; /* オレンジ色 */
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #FFF8E1; /* 優しいオレンジ背景 */
+}
+
+/* 入力フィールドのスタイル */
+.react-date-picker__inputGroup__input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 2px solid #FFA500;
+    background-color: #FFECB3;
+    color: #333;
+}
+
+.react-date-picker__inputGroup__input:focus {
+    outline: none;
+    border-color: #FF7043; /* フォーカス時に色を変える */
+    background-color: #FFE0B2;
+}
+
+/* カレンダーのポップアップ背景色 */
+.react-date-picker__calendar {
+    background-color: #FFEB3B; /* 明るい黄色の背景 */
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* 月日選択のハイライト */
+.react-date-picker__calendar__month {
+    color: #FF5722; /* オレンジレッド */
+}
+
+.react-date-picker__calendar__day--selected {
+    background-color: #FF7043; /* 選択した日をオレンジ色 */
+    color: white;
+}
+
+/* 滑らかなトランジション */
+.react-date-picker__inputGroup__input,
+.react-date-picker__calendar {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+--- src\renderer\src\components\MyDatePicker\MyDatePicker.tsx ---
+import DatePicker, {DatePickerProps} from "react-datepicker";
+import "./datePickerStyle.css";
+
+function MyDatePicker(props: DatePickerProps) {
+    return <DatePicker {...props}/>
+}
+
+export default MyDatePicker;
+
 
 --- src\renderer\src\components\SideBar\CommandBar.tsx ---
 import {Box, HTMLChakraProps, IconButton, IconButtonProps, VStack} from "@chakra-ui/react";
@@ -1630,7 +1805,6 @@ interface StopwatchState {
   startTime : number;   // ストップウォッチが開始された時刻
   elapsed   : number;   // 経過時間
   isMinimum : boolean;  // ストップウォッチが最小化されているかどうか
-  task      :string;    // 現在選択されているタスク
 }
 
 // Context に保持するデータと操作を表す型
@@ -1638,8 +1812,7 @@ interface StopwatchContextType {
   currentTime: number;          // 現在の経過時間
   isRunning: boolean;           // ストップウォッチの状態（動作中かどうか）
   isMinimum: boolean;           // 最小化状態かどうか
-  task:string;                 // 現在選択されているタスク
-  startStopwatch: (task?:string) => void;   // ストップウォッチを開始する関数
+  startStopwatch: () => void;   // ストップウォッチを開始する関数
   finishStopwatch: () => void;  // ストップウォッチを停止する関数
   resetStopwatch: (callback?:(currentTime:number)=>void) => void;  // ストップウォッチをリセットする関数
   setIsMinimum: (state:boolean) => void;  // 最小化状態を切り替える関数
@@ -1667,7 +1840,6 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     startTime: 0,      // 初期の開始時刻は0
     elapsed  : 0,        // 初期の経過時間は0
     isMinimum: false,  // 初期状態では最小化されていない
-    task     : "",     // 初期状態ではなにもない
   });
 
   // タイマーの参照
@@ -1679,7 +1851,7 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       : state.elapsed;  // 停止中は経過時間をそのまま使用
 
   // ストップウォッチを開始する関数
-  const startStopwatch = useCallback((task:string="") => {
+  const startStopwatch = useCallback(() => {
     // 既に動作中なら何もしない
     if (state.isRunning) return;
 
@@ -1689,21 +1861,19 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       startTime : Date.now(),
       elapsed   : state.elapsed,
       isMinimum : state.isMinimum, // 最小化状態を保持
-      task      : task, // タスクを更新
     });
   }, [state.isRunning, state.elapsed, state.isMinimum]);  // isRunning, elapsed, isMinimum が変更された時に再評価
 
   // ストップウォッチをリセットする関数
   const resetStopwatch = useCallback((callback?:(currentTime:number)=>void) => {
+    callback!(currentTime);
     // 経過時間や開始時刻をリセット
     setState({
       isRunning: false,
       startTime: 0,
       elapsed: 0,
       isMinimum:false, // 最小化状態をリセット
-      task:"" // タスクはリセット
     });
-    callback!(currentTime);
   }, [state.isMinimum]);  // isMinimum が変更された時に再評価
 
   // ストップウォッチ終了処理
@@ -1745,7 +1915,6 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Context に渡す値を準備
   const contextValue = {
     isRunning: state.isRunning,   // ストップウォッチの動作状態
-    task     : state.task,        // タスク
     currentTime,                  // 現在の経過時間
     isMinimum: state.isMinimum,   // 最小化状態
     startStopwatch,               // ストップウォッチ開始関数
@@ -1756,6 +1925,81 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // StopwatchContext.Provider で子コンポーネントに状態を提供
   return <StopwatchContext.Provider value={contextValue}>{children}</StopwatchContext.Provider>;
+};
+
+
+--- src\renderer\src\context\TaskContext.tsx ---
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+// タスクの型定義
+export interface TaskItem {
+    date_unix: number;
+    task: string;
+    task_hush:string, // date_unix-taskっていうふうにする
+}
+// ハッシュなし
+export type TaskItemNoHush = Omit<TaskItem, 'task_hush'>;
+
+// Context の型定義
+interface TaskContextProps {
+    taskData: TaskItem[]; // タスクの配列
+    taskList: string[]; // タスク名のリスト
+    taskNow: TaskItem | null; // 現在選択されているタスク
+    addTask: (newTask: TaskItem[]) => boolean; // タスク追加関数
+    taskNowHandler: (task:TaskItem|null)=>void; // 現在選択されたタスクを設定する関数
+}
+
+// ハッシュを生成する関数
+export const generateTaskHash = (task:TaskItemNoHush|TaskItem): string => {
+    // 簡易的にtaskの内容を基にハッシュを生成
+    return `${task.date_unix}-${task.task}`;
+};
+
+
+// Context の初期値
+const TaskContext = createContext<TaskContextProps | undefined>(undefined);
+
+// Provider の作成
+export const TaskProvider = ({ children }: { children: ReactNode }) => {
+    const [taskData, setTaskData] = useState<TaskItem[]>([]); // タスク配列の状態管理
+    const [taskNow, setTaskNow] = useState<TaskItem | null>(null); // 現在選択されているタスクの状態管理
+
+    // タスク名リストを動的に取得
+    const taskList = taskData.map((task) => task.task);
+
+    const addTask = (newTasks: TaskItemNoHush|TaskItemNoHush[]) => {
+        // 配列でない場合は配列に変換
+        const tasksToAdd = Array.isArray(newTasks) ? newTasks : [newTasks];
+
+        setTaskData((prev) => {
+            // `Map` を使って既存のタスクを一意に保持する
+            const taskMap = new Map(prev.map((task) => [generateTaskHash(task),task]));
+            // 重複を除外した新しいタスクを取得
+            tasksToAdd.forEach((newTask) => {
+                taskMap.set(generateTaskHash(newTask),{...newTask,task_hush:generateTaskHash(newTask)})
+            });
+            // 新しいタスクを追加して更新
+            return Array.from(taskMap.values());
+        });
+        return true;
+    };
+    const taskNowHandler = (task: TaskItem | null) => {
+        setTaskNow(task);
+    }
+    return (
+        <TaskContext.Provider value={{ taskData, taskList, taskNow, addTask,taskNowHandler }}>
+            {children}
+        </TaskContext.Provider>
+    );
+};
+
+// Context を利用するカスタムフック
+export const useTaskContext = () => {
+    const context = useContext(TaskContext);
+    if (!context) {
+        throw new Error('useTaskContext must be used within a TaskProvider');
+    }
+    return context;
 };
 
 
@@ -1818,6 +2062,93 @@ export const useWindowSize = (): WindowSize => {
 ::-webkit-scrollbar-corner {
     background: #f4f4f4;
 }
+
+
+--- src\renderer\src\test\tasktest.tsx ---
+import { useState } from 'react';
+import {Box, Button, Fieldset, Input} from '@chakra-ui/react';
+import {Field} from "../ui/field";
+import MyDatePicker from "../components/MyDatePicker/MyDatePicker";
+
+export const TaskCreate = () => {
+    const [taskName, setTaskName] = useState('');
+    const [dueDate, setDueDate] = useState<Date|null>(null);
+    // const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const handleTaskNameChange = (e) => setTaskName(e.target.value);
+    const handleDueDateChange = (date) => setDueDate(date);
+
+    const handleSubmit = () => {
+        if (taskName && dueDate) {
+            const dateUnix = Math.floor(dueDate.getTime() / 1000); // Unix timestamp (seconds)
+            const taskData = { date_unix: dateUnix, task: taskName };
+            console.log(taskData); // 送信されるデータ
+            setTaskName(''); // フォームのリセット
+            setDueDate(null);
+        }
+    };
+
+    const handleCancel = () => {
+        setTaskName('');
+        setDueDate(null);
+    };
+
+    return (
+        <Box
+            p={6}
+            w="400px"
+            borderRadius="md"
+            boxShadow="lg"
+            bg="orange.50"
+            maxW="lg"
+            margin="auto"
+        >
+            <Fieldset.Root size="lg" maxW="md">
+                <Fieldset.Content>
+                    <Field label="タスク名">
+                        <Input
+                            value={taskName}
+                            onChange={handleTaskNameChange}
+                            placeholder="タスク名を入力"
+                            size="lg"
+                            bg="white"
+                            borderColor="orange.200"
+                            _hover={{ borderColor: 'orange.300' }}
+                        />
+                    </Field>
+                    <Field label={"期限"}>
+                        <MyDatePicker
+                            selected={dueDate}
+                            onChange={handleDueDateChange}
+                            dateFormat="yyyy/MM/dd"
+                            placeholderText="期限を選択"
+                        />
+                    </Field>
+                </Fieldset.Content>
+            </Fieldset.Root>
+            <Box display="flex" justifyContent="space-between" w="100%">
+                <Button
+                    colorScheme="orange"
+                    onClick={handleSubmit}
+                    disabled={!taskName || !dueDate}
+                    size="lg"
+                >
+                    送信する
+                </Button>
+                <Button
+                    variant="outline"
+                    colorScheme="orange"
+                    onClick={handleCancel}
+                    size="lg"
+                >
+                    キャンセル
+                </Button>
+            </Box>
+        </Box>
+    );
+};
+
+export default TaskCreate;
 
 
 --- src\renderer\src\types\import-image.d.ts ---
@@ -2488,6 +2819,152 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
 export const RadioGroup = ChakraRadioGroup.Root
 
 
+--- src\renderer\src\ui\select.tsx ---
+"use client"
+
+import type { CollectionItem } from "@chakra-ui/react"
+import { Select as ChakraSelect, Portal } from "@chakra-ui/react"
+import { CloseButton } from "./src/components/ui/close-button"
+import * as React from "react"
+
+interface SelectTriggerProps extends ChakraSelect.ControlProps {
+  clearable?: boolean
+}
+
+export const SelectTrigger = React.forwardRef<
+  HTMLButtonElement,
+  SelectTriggerProps
+>(function SelectTrigger(props, ref) {
+  const { children, clearable, ...rest } = props
+  return (
+    <ChakraSelect.Control {...rest}>
+      <ChakraSelect.Trigger ref={ref}>{children}</ChakraSelect.Trigger>
+      <ChakraSelect.IndicatorGroup>
+        {clearable && <SelectClearTrigger />}
+        <ChakraSelect.Indicator />
+      </ChakraSelect.IndicatorGroup>
+    </ChakraSelect.Control>
+  )
+})
+
+const SelectClearTrigger = React.forwardRef<
+  HTMLButtonElement,
+  ChakraSelect.ClearTriggerProps
+>(function SelectClearTrigger(props, ref) {
+  return (
+    <ChakraSelect.ClearTrigger asChild {...props} ref={ref}>
+      <CloseButton
+        size="xs"
+        variant="plain"
+        focusVisibleRing="inside"
+        focusRingWidth="2px"
+        pointerEvents="auto"
+      />
+    </ChakraSelect.ClearTrigger>
+  )
+})
+
+interface SelectContentProps extends ChakraSelect.ContentProps {
+  portalled?: boolean
+  portalRef?: React.RefObject<HTMLElement>
+}
+
+export const SelectContent = React.forwardRef<
+  HTMLDivElement,
+  SelectContentProps
+>(function SelectContent(props, ref) {
+  const { portalled = true, portalRef, ...rest } = props
+  return (
+    <Portal disabled={!portalled} container={portalRef}>
+      <ChakraSelect.Positioner>
+        <ChakraSelect.Content {...rest} ref={ref} />
+      </ChakraSelect.Positioner>
+    </Portal>
+  )
+})
+
+export const SelectItem = React.forwardRef<
+  HTMLDivElement,
+  ChakraSelect.ItemProps
+>(function SelectItem(props, ref) {
+  const { item, children, ...rest } = props
+  return (
+    <ChakraSelect.Item key={item.value} item={item} {...rest} ref={ref}>
+      {children}
+      <ChakraSelect.ItemIndicator />
+    </ChakraSelect.Item>
+  )
+})
+
+interface SelectValueTextProps
+  extends Omit<ChakraSelect.ValueTextProps, "children"> {
+  children?(items: CollectionItem[]): React.ReactNode
+}
+
+export const SelectValueText = React.forwardRef<
+  HTMLSpanElement,
+  SelectValueTextProps
+>(function SelectValueText(props, ref) {
+  const { children, ...rest } = props
+  return (
+    <ChakraSelect.ValueText {...rest} ref={ref}>
+      <ChakraSelect.Context>
+        {(select) => {
+          const items = select.selectedItems
+          if (items.length === 0) return props.placeholder
+          if (children) return children(items)
+          if (items.length === 1)
+            return select.collection.stringifyItem(items[0])
+          return `${items.length} selected`
+        }}
+      </ChakraSelect.Context>
+    </ChakraSelect.ValueText>
+  )
+})
+
+export const SelectRoot = React.forwardRef<
+  HTMLDivElement,
+  ChakraSelect.RootProps
+>(function SelectRoot(props, ref) {
+  return (
+    <ChakraSelect.Root
+      {...props}
+      ref={ref}
+      positioning={{ sameWidth: true, ...props.positioning }}
+    >
+      {props.asChild ? (
+        props.children
+      ) : (
+        <>
+          <ChakraSelect.HiddenSelect />
+          {props.children}
+        </>
+      )}
+    </ChakraSelect.Root>
+  )
+}) as ChakraSelect.RootComponent
+
+interface SelectItemGroupProps extends ChakraSelect.ItemGroupProps {
+  label: React.ReactNode
+}
+
+export const SelectItemGroup = React.forwardRef<
+  HTMLDivElement,
+  SelectItemGroupProps
+>(function SelectItemGroup(props, ref) {
+  const { children, label, ...rest } = props
+  return (
+    <ChakraSelect.ItemGroup {...rest} ref={ref}>
+      <ChakraSelect.ItemGroupLabel>{label}</ChakraSelect.ItemGroupLabel>
+      {children}
+    </ChakraSelect.ItemGroup>
+  )
+})
+
+export const SelectLabel = ChakraSelect.Label
+export const SelectItemText = ChakraSelect.ItemText
+
+
 --- src\renderer\src\ui\slider.tsx ---
 import { Slider as ChakraSlider, For, HStack } from "@chakra-ui/react"
 import * as React from "react"
@@ -2646,6 +3123,26 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
 )
 
 
+--- src\renderer\src\ui\src\components\ui\close-button.tsx ---
+import type { ButtonProps } from "@chakra-ui/react"
+import { IconButton as ChakraIconButton } from "@chakra-ui/react"
+import * as React from "react"
+import { LuX } from "react-icons/lu"
+
+export type CloseButtonProps = ButtonProps
+
+export const CloseButton = React.forwardRef<
+  HTMLButtonElement,
+  CloseButtonProps
+>(function CloseButton(props, ref) {
+  return (
+    <ChakraIconButton variant="ghost" aria-label="Close" ref={ref} {...props}>
+      {props.children ?? <LuX />}
+    </ChakraIconButton>
+  )
+})
+
+
 --- src\renderer\src\util\calcElapsedTime.tsx ---
 
 // UNIXタイムスタンプの差分（秒単位）を受け取り
@@ -2667,6 +3164,14 @@ function calcElapsedTime(start: number, stop:number) {
 
 export default calcElapsedTime;
 
+
+--- src\renderer\src\util\convUnixOnlyDate.ts ---
+export function convUnixOnlyDate(date_unix: number) {
+    const nowDate = new Date(date_unix);
+    const month = `${nowDate.getMonth() + 1}`.padStart(2, "0");
+    const date = `${nowDate.getDate()}`.padStart(2, "0");
+    return `${month}月${date}日`;
+}
 
 --- src\renderer\src\util\convUnixToIso.tsx ---
 import { format } from 'date-fns';
