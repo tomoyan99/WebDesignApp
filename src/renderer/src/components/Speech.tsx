@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import {Box, Flex, Text} from "@chakra-ui/react";
 import todo from '../assets/todo.png';
 import {Avatar} from "../ui/avatar";
 

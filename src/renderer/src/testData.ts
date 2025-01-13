@@ -1,56 +1,61 @@
-import {Sessions} from "./components/Areas/SessionArea";
-import {getImage} from "./util/getImage";
-import {TaskItem} from "./context/TaskContext";
+import {TaskItemNoHush} from "./context/TaskContext";
+import {MySessions} from "./context/SessionContext";
 
-export const test_sessions :Sessions[] = [
-    {
-        start_unix:1609426800,
-        stop_unix :1609513200,
-        start_iso :"2020-01-01 00:00:00",
-        stop_iso  :"2020-01-02 00:00:00",
-        task      :"食べる",
-        posts:[
-            {
-                date_unix: 1609426860,
-                date_iso: "2020-01-03 00:00:00",
-                postMessage: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
-                reply: {
-                    date_unix: 1609426860,
-                    date_iso: "2020-01-03 00:00:00",
-                    replyName: "トドりん",
-                    replyId: "todorin1122",
-                    avatar: getImage("todo.png"),
-                    message:
-                        "これはクライアントには出せないかなぁ。\n" +
-                        "帰属意識は大事だけど視野狭窄になってない？\n" +
-                        "昇格はちょっと厳しくなったかもね。\n"
-                },
+export const testSessions: MySessions = [
+    [
+        {
+            type: "start",
+            date_unix: 1673520000,
+            date_iso: "2023-01-12 08:00:00",
+            message: "セッション開始",
+            task: "タスク1"
+        },
+        {
+            type: "post",
+            date_unix: 1673521800,
+            date_iso: "2023-01-12 08:30:00",
+            message: "進捗状況を確認",
+            reply: {
+                message: "確認完了",
+                date_unix: 1673523000,
+                date_iso: "2023-01-12 09:00:00"
             }
-        ],
-    },
-    {
-        posts:[
-            {
-                date_unix: 1609426860,
-                date_iso: "2020-01-03 00:00:00",
-                postMessage: "あいうえおあいうえお\nあいうえおあいうえおあいうえお",
-                reply: {
-                    date_unix: 1609426860,
-                    date_iso: "2020-01-03 00:00:00",
-                    replyName: "トドりん",
-                    replyId: "todorin1122",
-                    avatar: getImage("todo.png"),
-                    message:
-                        "これはクライアントには出せないかなぁ。\n" +
-                        "帰属意識は大事だけど視野狭窄になってない？\n" +
-                        "昇格はちょっと厳しくなったかもね。\n"
-                },
-            }
-        ]
-    }
+        },
+        {
+            type: "end",
+            date_unix: 1673526000,
+            date_iso: "2023-01-12 09:30:00",
+            message: "セッション終了",
+            elapsed: 5400,
+            task: "タスク1"
+        }
+    ],
+    [
+        {
+            type: "post",
+            date_unix: 1673610000,
+            date_iso: "2023-01-13 10:00:00",
+            message: "投稿のみのセッション"
+        }
+    ],
+    [
+        {
+            type: "start",
+            date_unix: 1673700000,
+            date_iso: "2023-01-14 12:00:00",
+            message: "別のセッション開始"
+        },
+        {
+            type: "end",
+            date_unix: 1673703600,
+            date_iso: "2023-01-14 13:00:00",
+            message: "作業終了",
+            elapsed: 3600
+        }
+    ]
 ];
 
-export const test_tasks:TaskItem[] = [
+export const testTasks:TaskItemNoHush[] = [
     {
         date_unix:1234567768,
         task:"食べる"

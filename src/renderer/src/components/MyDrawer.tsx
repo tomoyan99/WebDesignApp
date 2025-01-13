@@ -6,7 +6,7 @@ import Divider from '@mui/material/Divider';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BestBoutArea from "./Areas/BestBoutArea";
-import {HTMLChakraProps, Text, Box, IconButton} from "@chakra-ui/react";
+import {Box, HTMLChakraProps, IconButton, Text} from "@chakra-ui/react";
 import {CommandList} from "./SideBar/CommandList";
 import {MainViewer} from "./SideBar/MainViewer";
 import {CommandBar} from "./SideBar/CommandBar";
@@ -79,8 +79,8 @@ export function SideBar({children}:{children:React.ReactNode}) {
                 open={open}
             >
                 <DrawerHeader>
-                    <Text textStyle={"2xl"} w={"100%"} pl={"1em"}>
-                        アプリ名？
+                    <Text textStyle={"xl"} fontWeight={"bold"} w={"100%"} pl={"1em"}>
+                        タスク DE トドりん！
                     </Text>
                     <IconButton
                         size={"lg"}

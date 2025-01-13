@@ -1,7 +1,7 @@
 import MyDialog from "../MyDialog";
-import {Textarea,Text} from "@chakra-ui/react";
+import {Text, Textarea} from "@chakra-ui/react";
 import * as React from "react";
-import { Button } from "../../ui/button";
+import {Button} from "../../ui/button";
 import {DialogActionTrigger} from "../../ui/dialog";
 import convUnixToIso from "../../util/convUnixToIso";
 import {PostInfo} from "../Areas/SessionArea";
@@ -13,22 +13,24 @@ interface Props {
 
 export function Tweet(props:Props) {
     const [value, setValue] = React.useState("");
-
     const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(e.target.value);
     }
-    const onClickButton = async () => {
-        if(!value) return;
-        try {
-          await window.api.postTweet(value); // DBにINSERT
-        } catch(e){
-          console.error(e);
-        }
+    const onClickButton = () => {
+        alert(value);
         setValue("");
-        props.closeDialog();
+        const message = value;
+        const nowTimeUNIX = (new Date()).valueOf();
+        const nowTimeISO = convUnixToIso(nowTimeUNIX);
+        // 投稿
+        const post:PostInfo = {
+            date_iso :nowTimeISO,
+            date_unix:nowTimeUNIX,
+            postMessage:message,
+        }
+        console.log(post)
     }
     const ref = React.useRef<HTMLTextAreaElement>(null);
-
     return(
         <MyDialog.Root
             open={props.isOpen}
@@ -56,7 +58,6 @@ export function Tweet(props:Props) {
                         letterSpacing={0.1}
                         placeholder={"いまどうしてる？"}
                         ref={ref}
-                        value={value}
                     />
                 </MyDialog.Body>
                 <MyDialog.Footer>

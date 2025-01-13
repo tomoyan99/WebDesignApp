@@ -1,14 +1,14 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import {Provider} from "./ui/provider"
 import '@fontsource/zen-maru-gothic';
-import {createTheme,ThemeProvider} from "@mui/material";
+import {createTheme, ThemeProvider} from "@mui/material";
 import {createSystem, defaultConfig} from "@chakra-ui/react";
-import { StopwatchProvider } from "./context/StopwatchContext";
+import {StopwatchProvider} from "./context/StopwatchContext";
 import {DialogsProvider} from "./context/DialogsContext";
 import {TaskProvider} from "./context/TaskContext";
-import TaskCreate from "./test/tasktest";
+import {SessionProvider} from "./context/SessionContext";
 
 const theme = createTheme({
     typography:{
@@ -32,7 +32,9 @@ function MyProviders({children}: {children: React.ReactNode}) {
         <TaskProvider>
             <StopwatchProvider>
                 <DialogsProvider>
-                    {children}
+                    <SessionProvider>
+                        {children}
+                    </SessionProvider>
                 </DialogsProvider>
             </StopwatchProvider>
         </TaskProvider>

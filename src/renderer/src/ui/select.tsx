@@ -1,8 +1,8 @@
 "use client"
 
-import type { CollectionItem } from "@chakra-ui/react"
-import { Select as ChakraSelect, Portal } from "@chakra-ui/react"
-import { CloseButton } from "./src/components/ui/close-button"
+import type {CollectionItem} from "@chakra-ui/react"
+import {Portal, Select as ChakraSelect} from "@chakra-ui/react"
+import {CloseButton} from "./src/components/ui/close-button"
 import * as React from "react"
 
 interface SelectTriggerProps extends ChakraSelect.ControlProps {

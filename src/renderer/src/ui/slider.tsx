@@ -1,4 +1,4 @@
-import { Slider as ChakraSlider, For, HStack } from "@chakra-ui/react"
+import {For, HStack, Slider as ChakraSlider} from "@chakra-ui/react"
 import * as React from "react"
 
 export interface SliderProps extends ChakraSlider.RootProps {

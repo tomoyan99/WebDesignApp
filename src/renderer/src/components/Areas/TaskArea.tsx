@@ -5,7 +5,7 @@ import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
 import {useMyDialog} from "../../context/DialogsContext";
-import {generateTaskHash, TaskItem, useTaskContext} from "../../context/TaskContext";
+import {generateTaskHash,TaskItemNoHush, useTaskContext} from "../../context/TaskContext";
 import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 
 
@@ -38,8 +38,7 @@ export default function TaskArea() {
                                             <TaskButton
                                                 date_unix={item.date_unix}
                                                 task={item.task}
-                                                disabled={isRunning}
-                                            />
+                                                disabled={isRunning}                                            />
                                         </Box>
                                     );
                                 }}
@@ -58,7 +57,7 @@ export default function TaskArea() {
 }
 
 
-function TaskButton(data:TaskItem&{disabled:boolean}){
+function TaskButton(data:TaskItemNoHush&{disabled:boolean}){
     const { openDialog } = useMyDialog();
     const {taskNowHandler} = useTaskContext();
     const today = convUnixOnlyDate(data.date_unix);
