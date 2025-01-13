@@ -29,11 +29,10 @@ function App(): React.ReactElement {
         isRunning,
         isMinimum,
         currentTime,
-        task,
         finishStopwatch,
     } = useStopwatchContext();
 
-    const {addTask,taskData} = useTaskContext();
+    const {addTask,taskNow} = useTaskContext();
 
     useEffect(() => {
         let ignore = false;
@@ -51,7 +50,7 @@ function App(): React.ReactElement {
                 isRunning && isMinimum &&
                 <StopwatchDisplay
                     time={formatStopWatchTime(currentTime)}
-                    task={task}
+                    task={taskNow?.task}
                     onFinish={finishStopwatch}
                 />
             }

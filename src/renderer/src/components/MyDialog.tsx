@@ -64,7 +64,7 @@ namespace MyDialog {
             </DialogHeader>
         )
     }
-    export function Body(props:DialogBodyProps&HTMLChakraProps<"div">) {
+    export function Body(props:DialogBodyProps&React.RefAttributes<HTMLDivElement>) {
         const {children, ...other} = props;
         return(
             <DialogBody {...other}>

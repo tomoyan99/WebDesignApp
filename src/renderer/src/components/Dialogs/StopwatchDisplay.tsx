@@ -54,6 +54,7 @@ export default function StopwatchDisplay(props:DisplayProps) {
                             base:"transparent",
                             _hover:"blackAlpha.200"
                         }}
+                        p={1}
                     >
                         <FaStop />
                     </IconButton>

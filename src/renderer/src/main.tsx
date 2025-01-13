@@ -29,13 +29,13 @@ const system = createSystem(defaultConfig, {
 // プロバイダー十把一絡げ
 function MyProviders({children}: {children: React.ReactNode}) {
     return (
-        <StopwatchProvider>
-            <DialogsProvider>
-                <TaskProvider>
+        <TaskProvider>
+            <StopwatchProvider>
+                <DialogsProvider>
                     {children}
-                </TaskProvider>
-            </DialogsProvider>
-        </StopwatchProvider>
+                </DialogsProvider>
+            </StopwatchProvider>
+        </TaskProvider>
     );
 }
 
@@ -44,8 +44,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <ThemeProvider theme={theme}>
             <Provider system={system}>
                 <MyProviders>
-                    <TaskCreate/>
-                    {/*<App/>*/}
+                    {/*<TaskCreate/>*/}
+                    <App/>
                 </MyProviders>
             </Provider>
         </ThemeProvider>

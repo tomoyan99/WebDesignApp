@@ -5,7 +5,8 @@ import {EmptyState} from "../../ui/empty-state";
 import { TbMoodSadSquint } from "react-icons/tb";
 import {useStopwatchContext} from "../../context/StopwatchContext";
 import {useMyDialog} from "../../context/DialogsContext";
-import { TaskProps, useTaskContext } from "../../context/TaskContext";
+import {generateTaskHash, TaskItem, useTaskContext} from "../../context/TaskContext";
+import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 
 
 export default function TaskArea() {
@@ -57,14 +58,11 @@ export default function TaskArea() {
 }
 
 
-function TaskButton(data:TaskProps&{disabled:boolean}){
+function TaskButton(data:TaskItem&{disabled:boolean}){
     const { openDialog } = useMyDialog();
-
-    const nowDate = new Date(data.date_unix);
-    const month = `${nowDate.getMonth() + 1}`.padStart(2, "0");
-    const date = `${nowDate.getDate()}`.padStart(2, "0");
-    const today = `${month}月${date}日`;
-
+    const {taskNowHandler} = useTaskContext();
+    const today = convUnixOnlyDate(data.date_unix);
+    const {disabled,...date} = data;
     return (
         <>
             <Button
@@ -93,8 +91,14 @@ function TaskButton(data:TaskProps&{disabled:boolean}){
                 _active={{
                 }}
                 colorPalette={"orange"}
-                disabled={data.disabled}
-                onClick={() => openDialog('StopWatch', { task: data.task })}
+                disabled={disabled}
+                onClick={() => {
+                    taskNowHandler({
+                        ...date,
+                        task_hush:generateTaskHash(date)
+                    });
+                    openDialog('StopWatch')
+                }}
             >
                 <VStack gap={1} w={"80px"}>
                     <Text>{today}</Text>
@@ -103,7 +107,7 @@ function TaskButton(data:TaskProps&{disabled:boolean}){
                         whiteSpace={"nowrap"}
                         overflowX={"hidden"}
                         textOverflow={"ellipsis"}
-                    >{data.task}</Text>
+                    >{date.task}</Text>
                 </VStack>
             </Button>
         </>

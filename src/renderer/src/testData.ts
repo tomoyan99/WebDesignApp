@@ -1,6 +1,6 @@
 import {Sessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
-import {TaskProps} from "./context/TaskContext";
+import {TaskItem} from "./context/TaskContext";
 
 export const test_sessions :Sessions[] = [
     {
@@ -50,7 +50,7 @@ export const test_sessions :Sessions[] = [
     }
 ];
 
-export const test_tasks:TaskProps[] = [
+export const test_tasks:TaskItem[] = [
     {
         date_unix:1234567768,
         task:"食べる"
@@ -59,6 +59,19 @@ export const test_tasks:TaskProps[] = [
         date_unix:1234567768,
         task:"食べる"
     },
+    {
+        date_unix:1234567768,
+        task:"食す"
+    },
+    {
+        date_unix:1234567768,
+        task:"食む"
+    },
+    {
+        date_unix:2783423840,
+        task:"食べる"
+    },
+
 ];
 
 export const test_news:string[]=[

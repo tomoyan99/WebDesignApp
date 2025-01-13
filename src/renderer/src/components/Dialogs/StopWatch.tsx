@@ -1,13 +1,15 @@
 import MyDialog from "../MyDialog";
-import {Heading, HStack,Text, VStack} from "@chakra-ui/react";
+import {createListCollection, Heading,VStack} from "@chakra-ui/react";
 import { Button } from "../../ui/button";
 import { useStopwatchContext } from "../../context/StopwatchContext";
 import {formatStopWatchTime} from "../../util/formatStopWatchTime";
 import {OpenChangeDetails} from "@zag-js/dialog";
 import {DialogActionTrigger} from "../../ui/dialog";
+import {SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "../../ui/select";
+import {useTaskContext} from "../../context/TaskContext";
+import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 
 interface Props {
-    task?:string;
     closeDialog: () => void;
     isOpen: boolean;
 }
@@ -31,34 +33,43 @@ export function StopWatch(props: Props) {
                     props.closeDialog();
                 }}
             >
-                <MyDialog.Content>
+                <MyDialog.Content h={"450px"} bg={"orange.50"}>
                     <MyDialog.Header>ストップウォッチ</MyDialog.Header>
-                    <MyDialog.Body>
-                        <VStack gap={4}>
-                            <Heading size={"4xl"} textAlign={"center"} letterSpacing={4}>
+                    <MyDialog.Body pb={2} >
+                        <VStack justify="space-between" gap={4}>
+                            <Heading
+                                size={"6xl"}
+                                textAlign={"center"}
+                                letterSpacing={4}
+                                py={7}
+                            >
                                 {formatStopWatchTime(currentTime)}
                             </Heading>
-
-
-                            {props.task && <Text>タスク: {props.task}</Text>}
+                            <TaskSelect/>
                         </VStack>
                     </MyDialog.Body>
-                    <MyDialog.Footer>
-                        <HStack justifyContent={"center"} gap={4}>
-                            {isRunning ? (
-                                <DialogActionTrigger asChild>
-                                    <Button onClick={finishStopwatch} variant="outline" colorPalette="red">
-                                        終了
-                                    </Button>
-                                </DialogActionTrigger>
-                            ) : (
-                                <Button onClick={()=>{
-                                    startStopwatch(props.task)
-                                }} variant="solid" colorPalette="green">
-                                    開始
+                    <MyDialog.Footer justifyContent={"center"} pb={10}>
+                        {isRunning ? (
+                            <DialogActionTrigger asChild>
+                                <Button
+                                    size={"xl"}
+                                    onClick={finishStopwatch}
+                                    variant="outline"
+                                    colorPalette="red"
+                                >
+                                    フィニッシュ
                                 </Button>
-                            )}
-                        </HStack>
+                            </DialogActionTrigger>
+                        ) : (
+                            <Button
+                                size={"xl"}
+                                onClick={startStopwatch}
+                                variant="solid"
+                                colorPalette="green"
+                            >
+                                スタート
+                            </Button>
+                        )}
                     </MyDialog.Footer>
                 </MyDialog.Content>
             </MyDialog.Root>
@@ -67,5 +78,52 @@ export function StopWatch(props: Props) {
 }
 
 function TaskSelect(){
-
+    const {taskNow,taskData,taskNowHandler} = useTaskContext();
+    const {isRunning} = useStopwatchContext();
+    const frameworks = createListCollection({
+        items: taskData.map((task) =>{
+            const today = convUnixOnlyDate(task.date_unix);
+            return {label:`[${today}] ${task.task}`,value:task.task_hush};
+        }),
+    });
+    return(
+        <SelectRoot
+            collection={frameworks}
+            size="lg"
+            width="80%"
+            colorPalette={"orange"}
+            disabled={isRunning}
+            defaultValue={[taskNow?.task_hush]}
+            onValueChange={(details)=>{
+                const taskTarget = taskData.filter((task)=>task.task_hush === details.value)[0];
+                taskNowHandler(taskTarget);
+            }}
+        >
+            <SelectLabel textStyle={"lg"}>タスク</SelectLabel>
+            <SelectTrigger
+                bg={"orange.100/60"}
+                borderWidth={1}
+                borderColor={{
+                    base:"orange.100",
+                    _focusWithin:"orange.500",
+                }}
+            >
+                <SelectValueText placeholder="タスクを選択" />
+            </SelectTrigger>
+            <SelectContent zIndex={9999} bg={"orange.100"}>
+                {frameworks.items.map((data) => (
+                        <SelectItem
+                            item={data}
+                            key={data.value}
+                            bg={{
+                                _hover:"orange.200",
+                                _selected:"orange.300"
+                            }}
+                        >
+                            {data.label}
+                        </SelectItem>
+                ))}
+            </SelectContent>
+        </SelectRoot>
+    )
 }
