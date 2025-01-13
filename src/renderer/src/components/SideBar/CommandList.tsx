@@ -14,7 +14,7 @@ export function CommandList() {
             <For
                 each={[
                     { name: "ストップウォッチ", icon:<TimerOutlinedIcon/>,dialog:"StopWatch"},
-                    { name: "記録", icon:<EditNoteIcon/>,dialog:"AddLog"},
+                    { name: "まとめ", icon:<EditNoteIcon/>,dialog:"AddLog"},
                     { name: "つぶやき", icon:<ChatBubbleIcon/>,dialog:"Tweet"},
                     { name: "タスクを追加", icon:<AddTaskIcon/>,dialog:"AddTask"},
                 ]}

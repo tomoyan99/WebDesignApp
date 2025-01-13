@@ -1,3 +1,5 @@
+// src/renderer/src/components/Areas/SessionArea.tsx
+
 import {Area, AreaBody, AreaHeader} from "../Area";
 import {
     TimelineConnector,
@@ -26,68 +28,117 @@ import {
     useSessionContext
 } from "../../context/SessionContext";
 
-// 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
+// ★ 追加
+import { useLogContext } from "../../context/LogContext";
 
 export default function SessionArea(){
-    const {sessionData} = useSessionContext();
+    const { sessionData } = useSessionContext();
+
+    // ★ 追加: LogContextから、reply, result を受け取って
+    // 「トドリンからのリプライ」「トドリンからのまとめ」も最後に表示する例
+    const { reply, result } = useLogContext();
+
+    // sessionData は 2次元配列(セッションごと？)になっているようなので、
+    // ここで reply[], result[] をまとめて一番下に表示する実装例を入れます。
+    // 例: sessionData の最後に reply[] と result[] を「post」として強引に付け足すサンプル
+    // もちろんビジネスロジックに合わせて調整してください。
+    const combinedSessionData = React.useMemo(() => {
+      // sessionData は array of array
+      // 末尾に「トドリン」系を置くために、最終行だけ reply / result を付ける例
+      if (sessionData.length === 0) return [];
+
+      // deep copy
+      const newData = sessionData.map(items => [...items]);
+
+      // たとえば最終セッションの末尾にまとめて「post」項目として格納
+      // ここでは簡易サンプルとして reply[] と result[] を並べています
+      const last = newData[newData.length - 1];
+
+      // reply[] => MySessionItemPost として追加
+      reply.forEach((r) => {
+        last.push({
+          type: "post",
+          message: `[トドリン・リプライ] ${r.content}`,
+          date_unix: Date.now(), // 今
+          reply: undefined, // 仮: nested reply は不要
+        } as MySessionItemPost);
+      });
+
+      // result[] => MySessionItemPost として追加
+      result.forEach((res) => {
+        last.push({
+          type: "post",
+          message: `[トドリン・まとめ] ${res}`,
+          date_unix: Date.now(),
+          reply: undefined,
+        } as MySessionItemPost);
+      });
+
+      return newData;
+    }, [sessionData, reply, result]);
+
     return(
         <Area>
             <AreaHeader>りれき</AreaHeader>
-            {sessionData.length>0
-                ? <VStack overflowY={"auto"} gap={3}>
-                    <For each={sessionData}>
-                        {(session, sessionIndex)=>(
-                            <AreaBody
-                                key={`LogArea_TimeLine_${sessionIndex}`}
-                                p={6}
-                                pb={0}
-                                h={"fit-content"}
-                            >
-                                <TimelineRoot size={"lg"} maxW="400px">
-                                    <For each={session} key={`For_${sessionIndex}`}>
-                                        {(sessionItem,sessionItemIndex)=>(
-                                            <Box key={`Box_SessionItem_${sessionItemIndex}`}>
-                                                {sessionItem.type === "start" &&
-                                                    <TimeLineStart
-                                                        key={`Start_${sessionItemIndex}`}
-                                                        {...sessionItem}
-                                                    />}
-                                                {sessionItem.type === "post" &&
-                                                    <TimeLinePost
-                                                        key={`Topic_${sessionItemIndex}`}
-                                                        {...sessionItem}
-                                                    />
-                                                }
-                                                {sessionItem.type === "end" &&
-                                                    <TimeLineEnd
-                                                        key={`End_${sessionItemIndex}`}
-                                                        {...sessionItem}
-                                                    />}
-                                            </Box>
-                                        )}
-                                    </For>
-                                </TimelineRoot>
-                            </AreaBody>
-                        )}
+            {combinedSessionData.length>0
+                ? (
+                  <VStack overflowY={"auto"} gap={3}>
+                    <For each={combinedSessionData}>
+                      {(session, sessionIndex)=>(
+                        <AreaBody
+                          key={`LogArea_TimeLine_${sessionIndex}`}
+                          p={6}
+                          pb={0}
+                          h={"fit-content"}
+                        >
+                          <TimelineRoot size={"lg"} maxW="400px">
+                            <For each={session} key={`For_${sessionIndex}`}>
+                              {(sessionItem,sessionItemIndex)=>(
+                                <Box key={`Box_SessionItem_${sessionItemIndex}`}>
+                                  {sessionItem.type === "start" &&
+                                    <TimeLineStart
+                                      key={`Start_${sessionItemIndex}`}
+                                      {...sessionItem}
+                                    />}
+                                  {sessionItem.type === "post" &&
+                                    <TimeLinePost
+                                      key={`Topic_${sessionItemIndex}`}
+                                      {...sessionItem}
+                                    />
+                                  }
+                                  {sessionItem.type === "end" &&
+                                    <TimeLineEnd
+                                      key={`End_${sessionItemIndex}`}
+                                      {...sessionItem}
+                                    />}
+                                </Box>
+                              )}
+                            </For>
+                          </TimelineRoot>
+                        </AreaBody>
+                      )}
                     </For>
-                </VStack>
-                : <AreaBody>
+                  </VStack>
+                )
+                : (
+                  <AreaBody>
                     <EmptyState
-                        icon={<TbMoodSadSquint />}
-                        title="履歴がないよ～"
-                        size={"lg"}
+                      icon={<TbMoodSadSquint />}
+                      title="履歴がないよ～"
+                      size={"lg"}
                     >
-                        <Text textStyle={"lg"} whiteSpace={"pre-wrap"} textAlign={"center"}>
-                            {"サイドバーのストップウォッチから\nタスクを始めてね！"}
-                        </Text>
+                      <Text textStyle={"lg"} whiteSpace={"pre-wrap"} textAlign={"center"}>
+                        {"サイドバーのストップウォッチから\nタスクを始めてね！"}
+                      </Text>
                     </EmptyState>
-                </AreaBody>
+                  </AreaBody>
+                )
             }
         </Area>
     );
 }
 
-function TimeLineStart(props:MySessionItemStart){
+function TimeLineStart(props: MySessionItemStart){
     return(
         <TimelineItem>
             <TimelineConnector bg="teal.solid" color="teal.contrast" fontSize={"md"}>
@@ -107,7 +158,7 @@ function TimeLineStart(props:MySessionItemStart){
     );
 }
 
-function TimeLineEnd(props:MySessionItemEnd){
+function TimeLineEnd(props: MySessionItemEnd){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
@@ -119,6 +170,7 @@ function TimeLineEnd(props:MySessionItemEnd){
                     {props.task && <br/>}
                     タスクしゅーりょー！
                 </TimelineTitle>
+                {/* props.elapsed は number として受け取る設計例 */}
                 <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date_unix)}
@@ -128,7 +180,7 @@ function TimeLineEnd(props:MySessionItemEnd){
     );
 }
 
-function TimeLinePost(props:MySessionItemPost) {
+function TimeLinePost(props: MySessionItemPost) {
     return (
         <TimelineItem>
             <TimelineConnector bg="blue.solid" color="blue.contrast">
@@ -143,13 +195,13 @@ function TimeLinePost(props:MySessionItemPost) {
                     borderWidth={1}
                     borderColor={"gray.200"}
                 />
-                {props.reply?(<ReplyAccordion {...props.reply}/>):(<></>)}
+                {props.reply && <ReplyAccordion {...props.reply}/>}
             </TimelineContent>
         </TimelineItem>
     );
 }
 
-function ReplyAccordion(props:MyReplyInfo){
+function ReplyAccordion(props: MyReplyInfo){
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -165,10 +217,7 @@ function ReplyAccordion(props:MyReplyInfo){
             open={open}
         >
             <AccordionItem>
-                <AccordionItemTrigger
-                    pl={4}
-                    pr={4}
-                >
+                <AccordionItemTrigger pl={4} pr={4}>
                     {open
                         ? (
                             <HStack gap={4} pt={1} pb={0}>
@@ -189,7 +238,12 @@ function ReplyAccordion(props:MyReplyInfo){
                                 </VStack>
                             </HStack>
                         )
-                        : (<Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>返信がとどいているよ!</Text>)}
+                        : (
+                          <Text w={"100%"} pl={2}  color={"blue.500"} fontWeight={"bold"}>
+                            返信がとどいているよ!
+                          </Text>
+                        )
+                    }
                 </AccordionItemTrigger>
                 <AccordionItemContent pt={1} pb={1}>
                     <TopicCard
@@ -204,8 +258,8 @@ function ReplyAccordion(props:MyReplyInfo){
     )
 }
 
-function TopicCard(props:CardBodyProps&{message:string,date:number}) {
-    const {message,date,color,...other} = props;
+function TopicCard(props: CardBodyProps & { message: string; date: number }) {
+    const { message, date, color, ...other } = props;
     return (
         <Card.Root width="100%" borderWidth={0}>
             <Card.Body gap={3} {...other}>
@@ -213,7 +267,7 @@ function TopicCard(props:CardBodyProps&{message:string,date:number}) {
                     {message}
                 </Card.Description>
                 <TimelineDescription letterSpacing={"wide"} color={"gray.400"}>
-                    {convUnixToIso(props.date)}
+                    {convUnixToIso(date)}
                 </TimelineDescription>
             </Card.Body>
         </Card.Root>
