@@ -37,7 +37,7 @@ export default function SessionArea(){
             <AreaHeader>りれき</AreaHeader>
             {sessionData.length>0
                 ? <VStack overflowY={"auto"} gap={3}>
-                    <For each={sessionData}>
+                    <For each={[...sessionData].reverse()}>
                         {(session, sessionIndex)=>(
                             <AreaBody
                                 key={`LogArea_TimeLine_${sessionIndex}`}
@@ -46,6 +46,7 @@ export default function SessionArea(){
                                 h={"fit-content"}
                             >
                                 <TimelineRoot size={"lg"} maxW="400px">
+                                    {/*逆順で表示*/}
                                     <For each={session} key={`For_${sessionIndex}`}>
                                         {(sessionItem,sessionItemIndex)=>(
                                             <Fragment key={`fragment_${sessionItemIndex}`}>

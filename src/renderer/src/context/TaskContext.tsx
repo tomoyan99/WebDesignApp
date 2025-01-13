@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { loadTasksFromStorage, saveTasksToStorage } from "../util/taskStorage";
+import {clearTasksToStorage, loadTasksFromStorage, saveTasksToStorage} from "../util/taskStorage";
 
 // タスクの型定義
 export interface TaskItem {
@@ -18,7 +18,7 @@ interface TaskContextProps {
   taskNowHandler: (task: TaskItem | null) => void;
 }
 
-// ハッシュ生成関数）
+// ハッシュ生成関数
 export const generateTaskHash = (task:TaskItemNoHush): string => {
   return `${task.date_unix}-${task.task}`;
 };
@@ -26,6 +26,9 @@ export const generateTaskHash = (task:TaskItemNoHush): string => {
 const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
+  // タスク削除
+  clearTasksToStorage();
+
   const [taskData, setTaskData] = useState<TaskItem[]>(loadTasksFromStorage());
   const [taskNow, setTaskNow] = useState<TaskItem | null>(null);
 

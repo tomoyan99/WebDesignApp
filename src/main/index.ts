@@ -1,9 +1,8 @@
-import { app, shell, BrowserWindow } from 'electron'
+import {app, shell, BrowserWindow} from 'electron'
 import path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { setupDatabase } from './db' // ★ 追加：DB初期化関数を呼ぶ
-import "./ipc"
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -43,7 +42,7 @@ app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
 
   // データベース初期化
-  await setupDatabase();
+  // await setupDatabase();
 
   // ショートカットの監視
   app.on('browser-window-created', (_, window) => {

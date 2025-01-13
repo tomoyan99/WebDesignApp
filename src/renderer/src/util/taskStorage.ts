@@ -2,6 +2,11 @@ import { TaskItem } from "../context/TaskContext";
 
 const TASKS_KEY = "task_data";
 
+// タスクの保存をクリアする（ローカルストレージ）
+export const clearTasksToStorage = (): void => {
+  localStorage.setItem(TASKS_KEY,"");
+};
+
 // タスクを保存する（ローカルストレージ）
 export const saveTasksToStorage = (tasks: TaskItem[]): void => {
   localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));

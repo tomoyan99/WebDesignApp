@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react"
 import SideBar from "./components/MyDrawer";
 import TaskArea from "./components/Areas/TaskArea";
@@ -9,21 +9,8 @@ import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
 import {useTaskContext} from "./context/TaskContext";
-import {MySession, useSessionContext} from "./context/SessionContext";
-
-const {dataHandler} = window;
-
-function DataFetcher(){
-    const {initializeSession} = useSessionContext();
-    useEffect(() => {
-        // const initialize = async () => {
-        //     // const sessions = [await dataHandler.getSessions() as MySession];
-        //     // console.log(sessions);
-        //     initializeSession(sessions);
-        // }
-        // initialize();
-    }, []);
-}
+import {useSessionContext} from "./context/SessionContext";
+import {newsData} from "./testData";
 
 function App(): React.ReactElement {
     const {
@@ -34,14 +21,12 @@ function App(): React.ReactElement {
     } = useStopwatchContext();
 
     const {taskNow} = useTaskContext();
-    DataFetcher();
 
     const {endSession} = useSessionContext();
     const handleStopwatchFinish = ()=>{
         endSession("たすくしゅーりょー！");
         finishStopwatch();
     };
-
 
     return (
         <Box bg={"orange.50"} w={"100%"} h={"100vh"}
@@ -71,7 +56,7 @@ function App(): React.ReactElement {
                         <SessionArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
-                        <NewsArea　news={[]} />
+                        <NewsArea　news={newsData.slice(2,6)}/>
                     </GridItem>
                 </Grid>
             </SideBar>

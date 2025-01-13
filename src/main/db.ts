@@ -10,43 +10,36 @@ export const db = knex({
     useNullAsDefault: true,
 });
 
+// テーブルが存在するか確認し、存在しなければ作成する
+async function ensureTableExists() {
+    const hasTable = await db.schema.hasTable('news');
+    if (!hasTable) {
+        try {
+            await db.schema.createTable('news', (table) => {
+                table.increments('id').primary(); // 自動インクリメントのID
+                table.string('title').notNullable();
+                table.text('content').notNullable();
+            });
+            console.log('ニューステーブルが作成されました。');
+        } catch (error) {
+            console.error('テーブル作成エラー:', error);
+        }
+    }
+}
+// ニュースデータをデータベースに挿入
+async function insertNewsData() {
+    try {
+        for (const newsItem of newsData) {
+            await db('news').insert(newsItem);
+        }
+        console.log('ニュースデータが挿入されました。');
+    } catch (error) {
+        console.error('データ挿入エラー:', error);
+    }
+}
+
 // テーブル作成関数
 export async function setupDatabase() {
-  // sessions テーブルの作成
-  const existsSessions = await db.schema.hasTable('sessions');
-  if (!existsSessions) {
-    await db.schema.createTable('sessions', (table) => {
-            table.increments('id').primary();
-            table.string('type');
-            table.integer('date_unix');
-            table.string('date_iso');
-            table.string('message');
-            table.string('task').nullable();
-            table.integer('elapsed').nullable();
-        });
-  }
-
-  // posts テーブルの作成
-  const existsPosts = await db.schema.hasTable('posts');
-  if (!existsPosts) {
-    await db.schema.createTable('posts', (table) => {
-      table.increments('id').primary();
-      table.integer('session_id').unsigned().references('id').inTable('sessions');
-      table.integer('date_unix');
-      table.string('date_iso');
-      table.string('message');
-    });
-  }
-
-  // replies テーブルの作成
-  const existsReplies = await db.schema.hasTable('replies');
-  if (!existsReplies) {
-    await db.schema.createTable('replies', (table) => {
-      table.increments('id').primary();
-      table.integer('post_id').unsigned().references('id').inTable('posts');
-      table.string('message');
-      table.integer('date_unix');
-      table.string('date_iso');
-    });
-  }
+    await ensureTableExists();
+    await insertNewsData();
 }

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, {createContext, useContext, useState, useCallback, useEffect} from "react";
+import {clearSessionsToStorage, loadSessionsFromStorage, saveSessionsToStorage} from "../util/sessionsStorage";
 
 // 型定義
 
@@ -49,15 +50,17 @@ type SessionContextType = {
     startSession: (message: string, task?: string) => void; // セッション開始関数
     addPost: (message: string, reply?: MyReplyInfo) => void; // 投稿追加関数
     endSession: (message: string) => void; // セッション終了関数
-    initializeSession: (initialData: MySessions) => void; // セッションの初期化関数
 };
 
 // コンテキスト作成
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // セッション削除
+    // clearSessionsToStorage();
+
     // 全セッションデータを管理する状態
-    const [sessionData, setSessionData] = useState<MySessions>([]);
+    const [sessionData, setSessionData] = useState<MySessions>(loadSessionsFromStorage());
     // 現在進行中のセッションを管理する状態
     const [sessionNow, setSessionNow] = useState<MySession | null>(null);
     // 最新の sessionNow を保持するための useRef
@@ -81,11 +84,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             task,
         };
         const newSession: MySession = [startItem]; // 新しいセッションを作成
-        // window.dataHandler.addSession(startItem);
         setSessionNow(newSession); // 現在のセッションを更新
-
-        // データを逆順で保存
-        setSessionData((prev) => [newSession,...prev]); // 全セッションデータに追加
+        setSessionData((prev) => [...prev,newSession]); // 全セッションデータに追加
+        saveSessionsToStorage(sessionData);
     }, [sessionNow]);
 
     const addPost = useCallback((message: string, reply?: MyReplyInfo) => {
@@ -97,7 +98,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             reply,
         };
 
-        window.dataHandler.addPost(postItem);
         // 最新の sessionNow を参照して状態を更新
         if (sessionNowRef.current) {
             const updatedSession = [...sessionNowRef.current, postItem];
@@ -107,10 +107,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     session === sessionNowRef.current ? updatedSession : session
                 )
             );
+            saveSessionsToStorage(sessionData);
         } else {
             const newSession: MySession = [postItem];
             setSessionNow(newSession);
             setSessionData((prev) => [newSession, ...prev]);
+            saveSessionsToStorage(sessionData);
         }
     }, []);
 
@@ -128,7 +130,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             task:startItem?.task
         };
 
-        // window.dataHandler.addSession(endItem);
         // 現在のセッションに終了アイテムを追加
         setSessionNow((prev) => (prev ? [...prev, endItem] : null));
         setSessionData((prev) =>
@@ -136,12 +137,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         );
         setSessionNow(null); // 現在のセッションをリセット
     }, [sessionNow]);
-
-    // セッションを初期化する関数
-    const initializeSession = useCallback((initialData: MySessions) => {
-        setSessionData(initialData); // セッションデータを初期化
-        setSessionNow(null); // 現在のセッションをリセット
-    }, []);
 
     return (
         <SessionContext.Provider
@@ -152,7 +147,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
                 startSession,
                 addPost,
                 endSession,
-                initializeSession,
             }}
         >
             {children}

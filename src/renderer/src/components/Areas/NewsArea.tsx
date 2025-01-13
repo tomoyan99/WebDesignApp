@@ -4,7 +4,7 @@ import {For, VStack} from "@chakra-ui/react";
 import {TbMoodSadSquint} from "react-icons/tb";
 import {EmptyState} from "../../ui/empty-state";
 
-export default function NewsArea({news}:{news:string[]}) {
+export default function NewsArea({news}:{news:{title:string,content:string}[]}) {
     return(
         <Area>
             <AreaHeader>ニュース</AreaHeader>
@@ -21,7 +21,7 @@ export default function NewsArea({news}:{news:string[]}) {
                         <For each={news}>
                             {(item, index)=>(
                                 <Speech key={`Speech_${index}`}>
-                                    {`「${item}」`}
+                                    {`【${item.title}】\n「${item.content}」`}
                                 </Speech>
                             )}
                         </For>
