@@ -1,6 +1,6 @@
-import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "./datePickerStyle.css";
 import { Input } from "@chakra-ui/react";
 
 interface MyDatePickerProps {
@@ -18,11 +18,21 @@ export default function MyDatePicker({
 }: MyDatePickerProps) {
   return (
     <DatePicker
+      className={"react-date-picker"}
       selected={selected}
       onChange={onChange}
       dateFormat={dateFormat}
       placeholderText={placeholderText}
-      customInput={<Input />}
+      customInput={<Input
+          colorPalette={"orange"}
+          bg={"white"}
+          letterSpacing={2}
+          color={"orange.950"}
+          fontWeight={{
+            base:"bold",
+            _placeholder:"normal",
+          }}
+      />}
     />
   );
 }
