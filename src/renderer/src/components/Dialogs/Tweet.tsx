@@ -3,8 +3,7 @@ import {Text, Textarea} from "@chakra-ui/react";
 import * as React from "react";
 import {Button} from "../../ui/button";
 import {DialogActionTrigger} from "../../ui/dialog";
-import convUnixToIso from "../../util/convUnixToIso";
-import {PostInfo} from "../Areas/SessionArea";
+import {useSessionContext} from "../../context/SessionContext";
 
 interface Props {
     closeDialog: () => void;
@@ -16,19 +15,11 @@ export function Tweet(props:Props) {
     const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(e.target.value);
     }
+    const {addPost} = useSessionContext();
     const onClickButton = () => {
-        alert(value);
         setValue("");
-        const message = value;
-        const nowTimeUNIX = (new Date()).valueOf();
-        const nowTimeISO = convUnixToIso(nowTimeUNIX);
         // 投稿
-        const post:PostInfo = {
-            date_iso :nowTimeISO,
-            date_unix:nowTimeUNIX,
-            postMessage:message,
-        }
-        console.log(post)
+        addPost(value);
     }
     const ref = React.useRef<HTMLTextAreaElement>(null);
     return(

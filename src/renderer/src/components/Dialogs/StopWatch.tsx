@@ -8,6 +8,7 @@ import {DialogActionTrigger} from "../../ui/dialog";
 import {SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText} from "../../ui/select";
 import {useTaskContext} from "../../context/TaskContext";
 import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
+import {useSessionContext} from "../../context/SessionContext";
 
 interface Props {
     closeDialog: () => void;
@@ -23,6 +24,20 @@ export function StopWatch(props: Props) {
         finishStopwatch,
         setIsMinimum,
     } = useStopwatchContext();
+
+    const {taskNow} = useTaskContext();
+    const {startSession,endSession} = useSessionContext();
+
+    const handleStopwatchStart = ()=>{
+        startSession("スタート",taskNow?.task);
+        startStopwatch();
+    };
+    const handleStopwatchFinish = ()=>{
+        endSession("フィニッシュ");
+        finishStopwatch();
+    };
+
+
     return (
         <>
             <MyDialog.Root
@@ -53,7 +68,7 @@ export function StopWatch(props: Props) {
                             <DialogActionTrigger asChild>
                                 <Button
                                     size={"xl"}
-                                    onClick={finishStopwatch}
+                                    onClick={handleStopwatchFinish}
                                     variant="outline"
                                     colorPalette="red"
                                 >
@@ -63,7 +78,7 @@ export function StopWatch(props: Props) {
                         ) : (
                             <Button
                                 size={"xl"}
-                                onClick={startStopwatch}
+                                onClick={handleStopwatchStart}
                                 variant="solid"
                                 colorPalette="green"
                             >
@@ -126,4 +141,8 @@ function TaskSelect(){
             </SelectContent>
         </SelectRoot>
     )
+}
+
+function useCallback() {
+    throw new Error("Function not implemented.");
 }

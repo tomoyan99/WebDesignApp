@@ -15,7 +15,7 @@ interface StopwatchContextType {
   isMinimum: boolean;           // 最小化状態かどうか
   startStopwatch: () => void;   // ストップウォッチを開始する関数
   finishStopwatch: () => void;  // ストップウォッチを停止する関数
-  resetStopwatch: (callback?:(currentTime:number)=>void) => void;  // ストップウォッチをリセットする関数
+  resetStopwatch: () => void;  // ストップウォッチをリセットする関数
   setIsMinimum: (state:boolean) => void;  // 最小化状態を切り替える関数
 }
 
@@ -66,8 +66,7 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [state.isRunning, state.elapsed, state.isMinimum]);  // isRunning, elapsed, isMinimum が変更された時に再評価
 
   // ストップウォッチをリセットする関数
-  const resetStopwatch = useCallback((callback?:(currentTime:number)=>void) => {
-    callback!(currentTime);
+  const resetStopwatch = useCallback(() => {
     // 経過時間や開始時刻をリセット
     setState({
       isRunning: false,
@@ -81,9 +80,7 @@ export const StopwatchProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // 中身いじってね
   const finishStopwatch = useCallback(()=>{
     setIsMinimum(false);
-    resetStopwatch((currentTime)=>{
-      alert(currentTime)
-    });
+    resetStopwatch();
   },[]);
 
   // 最小化状態を設定する関数（引数にbooleanを受け取る）
