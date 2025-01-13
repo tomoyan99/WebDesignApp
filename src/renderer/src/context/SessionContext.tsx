@@ -60,6 +60,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const [sessionData, setSessionData] = useState<MySessions>([]);
     // 現在進行中のセッションを管理する状態
     const [sessionNow, setSessionNow] = useState<MySession | null>(null);
+    // 最新の sessionNow を保持するための useRef
+    const sessionNowRef = React.useRef<MySession | null>(sessionNow);
+
+    // sessionNow が変更されるたびに ref を更新
+    React.useEffect(() => {
+        sessionNowRef.current = sessionNow;
+    }, [sessionNow]);
 
     // セッションが進行中かを判定
     const isRunningSession = !!sessionNow;
@@ -80,7 +87,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSessionData((prev) => [newSession,...prev]); // 全セッションデータに追加
     }, [sessionNow]);
 
-    // 投稿を追加する関数
     const addPost = useCallback((message: string, reply?: MyReplyInfo) => {
         const postItem: MySessionItem = {
             type: "post",
@@ -89,17 +95,23 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             message,
             reply,
         };
-        if (sessionNow) {
-            // 現在のセッションに追加
-            setSessionNow((prev) => {
-                return prev ? [...prev, postItem] : null
-            });
+
+        // 最新の sessionNow を参照して状態を更新
+        if (sessionNowRef.current) {
+            const updatedSession = [...sessionNowRef.current, postItem];
+            setSessionNow(updatedSession);
+            setSessionData((prev) =>
+                prev.map((session) =>
+                    session === sessionNowRef.current ? updatedSession : session
+                )
+            );
         } else {
-            // 新しいセッションとして追加
             const newSession: MySession = [postItem];
-            setSessionData((prev) => [...prev, newSession]);
+            setSessionNow(newSession);
+            setSessionData((prev) => [newSession, ...prev]);
         }
-    },[sessionNow]);
+    }, []);
+
 
     // セッションを終了する関数
     const endSession = useCallback((message: string) => {
