@@ -38,8 +38,7 @@ export default function TaskArea() {
                                             <TaskButton
                                                 date_unix={item.date_unix}
                                                 task={item.task}
-                                                disabled={isRunning}
-                                            />
+                                                disabled={isRunning} task_hush={""}                                            />
                                         </Box>
                                     );
                                 }}
