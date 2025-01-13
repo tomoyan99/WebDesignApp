@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow} from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { setupDatabase } from './db' // ★ 追加：DB初期化関数を呼ぶ
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -14,7 +15,7 @@ function createWindow(): void {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
-    minWidth:900,
+    minWidth: 900,
     minHeight: 670,
   });
 
@@ -36,9 +37,13 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.electron')
 
+  // データベース初期化
+  await setupDatabase();
+
+  // ショートカットの監視
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
