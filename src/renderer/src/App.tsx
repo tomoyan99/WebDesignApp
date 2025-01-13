@@ -5,17 +5,23 @@ import TaskArea from "./components/Areas/TaskArea";
 import NewsArea from "./components/Areas/NewsArea";
 import SessionArea from "./components/Areas/SessionArea";
 import "./style/scroll.css";
-import {test_news, testSessions, testTasks} from "./testData";
 import StopwatchDisplay from "./components/Dialogs/StopwatchDisplay";
 import {formatStopWatchTime} from "./util/formatStopWatchTime";
 import {useStopwatchContext} from "./context/StopwatchContext";
 import {useTaskContext} from "./context/TaskContext";
-import {useSessionContext} from "./context/SessionContext";
+import {MySession, useSessionContext} from "./context/SessionContext";
+
+const {dataHandler} = window;
+
 function DataFetcher(){
     const {initializeSession} = useSessionContext();
     useEffect(() => {
-        // addTask(testTasks);
-        // initializeSession(testSessions);
+        // const initialize = async () => {
+        //     // const sessions = [await dataHandler.getSessions() as MySession];
+        //     // console.log(sessions);
+        //     initializeSession(sessions);
+        // }
+        // initialize();
     }, []);
 }
 
@@ -65,7 +71,7 @@ function App(): React.ReactElement {
                         <SessionArea/>
                     </GridItem>
                     <GridItem  colSpan={2}>
-                        <NewsArea　news={test_news} />
+                        <NewsArea　news={[]} />
                     </GridItem>
                 </Grid>
             </SideBar>

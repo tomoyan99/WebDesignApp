@@ -10,6 +10,8 @@ import {useTaskContext} from "../../context/TaskContext";
 import {convUnixOnlyDate} from "../../util/convUnixOnlyDate";
 import {useSessionContext} from "../../context/SessionContext";
 
+// const {dataHandler} = window;
+
 interface Props {
     closeDialog: () => void;
     isOpen: boolean;

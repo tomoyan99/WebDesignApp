@@ -81,6 +81,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             task,
         };
         const newSession: MySession = [startItem]; // 新しいセッションを作成
+        // window.dataHandler.addSession(startItem);
         setSessionNow(newSession); // 現在のセッションを更新
 
         // データを逆順で保存
@@ -96,6 +97,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             reply,
         };
 
+        window.dataHandler.addPost(postItem);
         // 最新の sessionNow を参照して状態を更新
         if (sessionNowRef.current) {
             const updatedSession = [...sessionNowRef.current, postItem];
@@ -126,6 +128,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             task:startItem?.task
         };
 
+        // window.dataHandler.addSession(endItem);
         // 現在のセッションに終了アイテムを追加
         setSessionNow((prev) => (prev ? [...prev, endItem] : null));
         setSessionData((prev) =>

@@ -3,6 +3,7 @@ import path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { setupDatabase } from './db' // ★ 追加：DB初期化関数を呼ぶ
+import "./ipc"
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -13,6 +14,7 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
+      contextIsolation: true,
       sandbox: false,
     },
     minWidth: 900,
