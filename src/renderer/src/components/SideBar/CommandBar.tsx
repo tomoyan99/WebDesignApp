@@ -77,7 +77,7 @@ export function CommandBar(props:CommandBarProps) {
 
                 {/*サイドバー*/}
                 {/*ストップウォッチ*/}
-                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("StopWatch")}>
+                <IconButton {...sideBarIconButtonStyle} onClick={()=>openDialog("StopWatch",{task:""})}>
                     <TimerOutlinedIcon/>
                 </IconButton>
 

@@ -61,7 +61,7 @@ function TaskButton(data:TaskItemNoHush&{disabled:boolean}){
     const { openDialog } = useMyDialog();
     const {taskNowHandler} = useTaskContext();
     const today = convUnixOnlyDate(data.date_unix);
-    const {disabled,...date} = data;
+    const {disabled,...dateAndTask} = data;
     return (
         <>
             <Button
@@ -93,10 +93,10 @@ function TaskButton(data:TaskItemNoHush&{disabled:boolean}){
                 disabled={disabled}
                 onClick={() => {
                     taskNowHandler({
-                        ...date,
-                        task_hush:generateTaskHash(date)
+                        ...dateAndTask,
+                        task_hush:generateTaskHash(dateAndTask)
                     });
-                    openDialog('StopWatch')
+                    openDialog("StopWatch")
                 }}
             >
                 <VStack gap={1} w={"80px"}>
@@ -106,7 +106,7 @@ function TaskButton(data:TaskItemNoHush&{disabled:boolean}){
                         whiteSpace={"nowrap"}
                         overflowX={"hidden"}
                         textOverflow={"ellipsis"}
-                    >{date.task}</Text>
+                    >{dateAndTask.task}</Text>
                 </VStack>
             </Button>
         </>

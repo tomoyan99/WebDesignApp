@@ -10,13 +10,13 @@ import {
     TimelineTitle
 } from "../../ui/timeline"
 import {FaRegPenToSquare} from "react-icons/fa6";
-import {LuPause, LuPlay} from "react-icons/lu";
-import {Box, Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
+import {LuPlay} from "react-icons/lu";
+import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
 import convUnixToIso from "../../util/convUnixToIso";
 import {Avatar} from "../../ui/avatar";
 import calcElapsedTime from "../../util/calcElapsedTime";
 import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
-import React from "react";
+import React,{Fragment} from "react";
 import {EmptyState} from "../../ui/empty-state";
 import {TbMoodSadSquint} from "react-icons/tb";
 import todo from "../../assets/todo.png"
@@ -27,6 +27,8 @@ import {
     MySessionItemStart,
     useSessionContext
 } from "../../context/SessionContext";
+import { FaCheck } from "react-icons/fa";
+
 
 // ★ 追加
 import { useLogContext } from "../../context/LogContext";
@@ -80,6 +82,7 @@ export default function SessionArea(){
     return(
         <Area>
             <AreaHeader>りれき</AreaHeader>
+<<<<<<< HEAD
             {combinedSessionData.length>0
                 ? (
                   <VStack overflowY={"auto"} gap={3}>
@@ -117,6 +120,44 @@ export default function SessionArea(){
                           </TimelineRoot>
                         </AreaBody>
                       )}
+=======
+            {sessionData.length>0
+                ? <VStack overflowY={"auto"} gap={3}>
+                    <For each={sessionData}>
+                        {(session, sessionIndex)=>(
+                            <AreaBody
+                                key={`LogArea_TimeLine_${sessionIndex}`}
+                                p={6}
+                                pb={0}
+                                h={"fit-content"}
+                            >
+                                <TimelineRoot size={"lg"} maxW="400px">
+                                    <For each={session} key={`For_${sessionIndex}`}>
+                                        {(sessionItem,sessionItemIndex)=>(
+                                            <Fragment key={`fragment_${sessionItemIndex}`}>
+                                                {sessionItem.type === "start" &&
+                                                    <TimeLineStart
+                                                        key={`Start_${sessionItemIndex}`}
+                                                        {...sessionItem}
+                                                    />}
+                                                {sessionItem.type === "post" &&
+                                                    <TimeLinePost
+                                                        key={`Topic_${sessionItemIndex}`}
+                                                        {...sessionItem}
+                                                    />
+                                                }
+                                                {sessionItem.type === "end" &&
+                                                    <TimeLineEnd
+                                                        key={`End_${sessionItemIndex}`}
+                                                        {...sessionItem}
+                                                    />}
+                                            </Fragment>
+                                        )}
+                                    </For>
+                                </TimelineRoot>
+                            </AreaBody>
+                        )}
+>>>>>>> e76705db2341f0dc1fed76ccd4bf36ba1ab51764
                     </For>
                   </VStack>
                 )
@@ -148,7 +189,7 @@ function TimeLineStart(props: MySessionItemStart){
                 <TimelineTitle textStyle={"sm"}>
                     {props.task && `[${props.task}]`}
                     {props.task && <br/>}
-                    タスクかいし！
+                    {props.message}
                 </TimelineTitle>
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date_unix)}
@@ -162,16 +203,21 @@ function TimeLineEnd(props: MySessionItemEnd){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
-                <LuPause/>
+                <FaCheck/>
             </TimelineConnector>
             <TimelineContent >
                 <TimelineTitle textStyle="sm">
                     {props.task && `[${props.task}]`}
                     {props.task && <br/>}
-                    タスクしゅーりょー！
+                    {props.message}
+                    <br/>
                 </TimelineTitle>
+<<<<<<< HEAD
                 {/* props.elapsed は number として受け取る設計例 */}
                 <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
+=======
+                <Text textStyle={"sm"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
+>>>>>>> e76705db2341f0dc1fed76ccd4bf36ba1ab51764
                 <TimelineDescription letterSpacing={"wide"}>
                     {convUnixToIso(props.date_unix)}
                 </TimelineDescription>
@@ -187,7 +233,7 @@ function TimeLinePost(props: MySessionItemPost) {
                 <FaRegPenToSquare/>
             </TimelineConnector>
             <TimelineContent>
-                <TopicCard
+                <PostCard
                     message={props.message}
                     date={props.date_unix}
                     textStyle={"md"}
@@ -246,7 +292,7 @@ function ReplyAccordion(props: MyReplyInfo){
                     }
                 </AccordionItemTrigger>
                 <AccordionItemContent pt={1} pb={1}>
-                    <TopicCard
+                    <PostCard
                         message={props.message}
                         date={props.date_unix}
                         pt={0}
@@ -258,8 +304,13 @@ function ReplyAccordion(props: MyReplyInfo){
     )
 }
 
+<<<<<<< HEAD
 function TopicCard(props: CardBodyProps & { message: string; date: number }) {
     const { message, date, color, ...other } = props;
+=======
+function PostCard(props:CardBodyProps&{message:string,date:number}) {
+    const {message,date,color,...other} = props;
+>>>>>>> e76705db2341f0dc1fed76ccd4bf36ba1ab51764
     return (
         <Card.Root width="100%" borderWidth={0}>
             <Card.Body gap={3} {...other}>

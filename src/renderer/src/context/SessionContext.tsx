@@ -112,18 +112,18 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }, []);
 
-
     // セッションを終了する関数
     const endSession = useCallback((message: string) => {
         if (!sessionNow) return; // セッションがない場合は何もしない
 
-        const startItem = sessionNow[0]; // セッションの開始アイテム
+        const startItem = sessionNow[0] as MySessionItemStart; // セッションの開始アイテム
         const endItem: MySessionItemEnd = {
             type: "end",
             date_unix: Date.now(),
             date_iso: new Date().toISOString(),
             message,
             elapsed: Date.now() - startItem.date_unix,
+            task:startItem?.task
         };
 
         // 現在のセッションに終了アイテムを追加

@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { loadTasksFromStorage, saveTasksToStorage } from "../util/taskStorage";
 
-// タスクの型定義（変更なし）
+// タスクの型定義
 export interface TaskItem {
   date_unix: number;
   task: string;
   task_hush: string; // date_unix-task
 }
+// タスクの型定
+export type TaskItemNoHush = Omit<TaskItem, "task_hush">;
 
 interface TaskContextProps {
   taskData: TaskItem[];
@@ -16,8 +18,8 @@ interface TaskContextProps {
   taskNowHandler: (task: TaskItem | null) => void;
 }
 
-// ハッシュ生成関数（変更なし）
-export const generateTaskHash = (task: Omit<TaskItem, "task_hush">): string => {
+// ハッシュ生成関数）
+export const generateTaskHash = (task:TaskItemNoHush): string => {
   return `${task.date_unix}-${task.task}`;
 };
 
@@ -29,7 +31,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
   const taskList = taskData.map((task) => task.task);
 
-  const addTask = (newTasks: Omit<TaskItem, "task_hush"> | Omit<TaskItem, "task_hush">[]) => {
+  const addTask = (newTasks:TaskItemNoHush|TaskItemNoHush[]) => {
     const tasksToAdd = Array.isArray(newTasks) ? newTasks : [newTasks];
 
     setTaskData((prev) => {
