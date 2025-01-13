@@ -75,8 +75,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         };
         const newSession: MySession = [startItem]; // 新しいセッションを作成
         setSessionNow(newSession); // 現在のセッションを更新
-        setSessionData((prev) => [...prev, newSession]); // 全セッションデータに追加
-    }, []);
+
+        // データを逆順で保存
+        setSessionData((prev) => [newSession,...prev]); // 全セッションデータに追加
+    }, [sessionNow]);
 
     // 投稿を追加する関数
     const addPost = useCallback((message: string, reply?: MyReplyInfo) => {
@@ -87,16 +89,17 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             message,
             reply,
         };
-
         if (sessionNow) {
             // 現在のセッションに追加
-            setSessionNow((prev) => (prev ? [...prev, postItem] : null));
+            setSessionNow((prev) => {
+                return prev ? [...prev, postItem] : null
+            });
         } else {
             // 新しいセッションとして追加
             const newSession: MySession = [postItem];
             setSessionData((prev) => [...prev, newSession]);
         }
-    }, [sessionNow]);
+    },[sessionNow]);
 
     // セッションを終了する関数
     const endSession = useCallback((message: string) => {

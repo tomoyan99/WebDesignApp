@@ -16,8 +16,8 @@ function DataFetcher(){
     const {addTask} = useTaskContext();
     const {initializeSession} = useSessionContext();
     useEffect(() => {
-        addTask(testTasks);
-        initializeSession(testSessions);
+        // addTask(testTasks);
+        // initializeSession(testSessions);
     }, []);
 }
 
