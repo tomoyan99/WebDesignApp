@@ -132,9 +132,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         // 現在のセッションに終了アイテムを追加
         setSessionNow((prev) => (prev ? [...prev, endItem] : null));
-        setSessionData((prev) =>
-            prev.map((session) => (session === sessionNow ? [...session, endItem] : session))
-        );
+        setSessionData((prev) =>{
+            const data = prev.map((session) => {
+                return (session === sessionNow ? [...session, endItem] : session);
+            })
+            saveSessionsToStorage(data);
+            return data;
+        });
         setSessionNow(null); // 現在のセッションをリセット
     }, [sessionNow]);
 

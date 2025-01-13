@@ -27,7 +27,7 @@ const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   // タスク削除
-  clearTasksToStorage();
+  // clearTasksToStorage();
 
   const [taskData, setTaskData] = useState<TaskItem[]>(loadTasksFromStorage());
   const [taskNow, setTaskNow] = useState<TaskItem | null>(null);
