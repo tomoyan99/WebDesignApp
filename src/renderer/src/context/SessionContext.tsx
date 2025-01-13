@@ -49,6 +49,7 @@ type SessionContextType = {
     startSession: (message: string, task?: string) => void; // セッション開始関数
     addPost: (message: string, reply?: MyReplyInfo) => void; // 投稿追加関数
     endSession: (message: string) => void; // セッション終了関数
+    initializeSession: (initialData: MySessions) => void; // セッションの初期化関数
 };
 
 // コンテキスト作成
@@ -118,9 +119,23 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSessionNow(null); // 現在のセッションをリセット
     }, [sessionNow]);
 
+    // セッションを初期化する関数
+    const initializeSession = useCallback((initialData: MySessions) => {
+        setSessionData(initialData); // セッションデータを初期化
+        setSessionNow(null); // 現在のセッションをリセット
+    }, []);
+
     return (
         <SessionContext.Provider
-            value={{ sessionData, sessionNow, isRunningSession, startSession, addPost, endSession }}
+            value={{
+                sessionData,
+                sessionNow,
+                isRunningSession,
+                startSession,
+                addPost,
+                endSession,
+                initializeSession,
+            }}
         >
             {children}
         </SessionContext.Provider>
