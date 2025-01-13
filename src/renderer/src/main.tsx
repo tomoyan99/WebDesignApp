@@ -31,11 +31,11 @@ function MyProviders({children}: {children: React.ReactNode}) {
     return (
         <TaskProvider>
             <StopwatchProvider>
-                <SessionProvider>
-                    <DialogsProvider>
+                <DialogsProvider>
+                    <SessionProvider>
                         {children}
-                    </DialogsProvider>
-                </SessionProvider>
+                    </SessionProvider>
+                </DialogsProvider>
             </StopwatchProvider>
         </TaskProvider>
     );
