@@ -6,7 +6,7 @@ import Divider from '@mui/material/Divider';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BestBoutArea from "./Areas/BestBoutArea";
-import {HTMLChakraProps, Text, Box, IconButton} from "@chakra-ui/react";
+import {Box, HTMLChakraProps, IconButton, Text} from "@chakra-ui/react";
 import {CommandList} from "./SideBar/CommandList";
 import {MainViewer} from "./SideBar/MainViewer";
 import {CommandBar} from "./SideBar/CommandBar";

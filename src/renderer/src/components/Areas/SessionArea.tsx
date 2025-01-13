@@ -1,7 +1,14 @@
-import {Area,AreaHeader,AreaBody} from "../Area";
-import {TimelineConnector, TimelineContent, TimelineDescription, TimelineItem, TimelineRoot, TimelineTitle} from "../../ui/timeline"
-import { FaRegPenToSquare } from "react-icons/fa6";
-import { LuPlay,LuPause } from "react-icons/lu";
+import {Area, AreaBody, AreaHeader} from "../Area";
+import {
+    TimelineConnector,
+    TimelineContent,
+    TimelineDescription,
+    TimelineItem,
+    TimelineRoot,
+    TimelineTitle
+} from "../../ui/timeline"
+import {FaRegPenToSquare} from "react-icons/fa6";
+import {LuPause, LuPlay} from "react-icons/lu";
 import {Card, CardBodyProps, For, HStack, Text, VStack} from "@chakra-ui/react";
 import convUnixToIso from "../../util/convUnixToIso";
 import {Avatar} from "../../ui/avatar";
@@ -9,44 +16,26 @@ import calcElapsedTime from "../../util/calcElapsedTime";
 import {AccordionItem, AccordionItemContent, AccordionItemTrigger, AccordionRoot} from "../../ui/accordion";
 import React from "react";
 import {EmptyState} from "../../ui/empty-state";
-import { TbMoodSadSquint } from "react-icons/tb";
+import {TbMoodSadSquint} from "react-icons/tb";
+import todo from "../../assets/todo.png"
+import {
+    MyReplyInfo,
+    MySessionItemEnd,
+    MySessionItemPost,
+    MySessionItemStart,
+    MySessions
+} from "../../context/SessionContext";
 
 // 時間はDBからUNIXタイムスタンプを受け取るようにし、それをクライアント側で指定のフォーマットに変換するように。
 
-// Replyの情報
-export type ReplyInfo = {
-    avatar   :string,
-    replyName:string,
-    replyId  :string,
-    message  :string,
-    date_unix:number,
-    date_iso :string,
-}
-export type PostInfo = {
-    date_unix   :number,
-    date_iso    :string,
-    postMessage :string,
-    reply      ?:ReplyInfo
-}
-
-export type Sessions = {
-    start_unix ?:number,
-    stop_unix  ?:number,
-    start_iso  ?:string,
-    stop_iso   ?:string,
-    task       ?:string,
-    posts      :PostInfo[]
-};
-
-
-export default function SessionArea({sessions}:{sessions:Sessions[]}){
+export default function SessionArea({sessions}:{sessions:MySessions}){
     return(
         <Area>
             <AreaHeader>りれき</AreaHeader>
             {sessions.length>0
                 ? <VStack overflowY={"auto"} gap={3}>
                     <For each={sessions}>
-                        {(item, index)=>(
+                        {(session, index)=>(
                             <AreaBody
                                 key={`LogArea_TimeLine_${index}`}
                                 p={6}
@@ -54,23 +43,28 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
                                 h={"fit-content"}
                             >
                                 <TimelineRoot  size={"lg"} maxW="400px">
-                                    {(item.start_unix) && <TimeLineStart date={item.start_unix} task={item?.task}/>}
-                                    <For each={item.posts}>
-                                        {(item2, index2)=>(
-                                            <TimeLineTopic
-                                                key={`Topic_${item.start_unix}-${item.stop_unix}_${index2}`}
-                                                date={item2.date_unix}
-                                                topic={item2.postMessage}
-                                                reply={item2.reply}
-                                            />
+                                    <For each={session}>
+                                        {(sessionItem,index)=>(
+                                            <>
+                                                {sessionItem.type === "start" &&
+                                                    <TimeLineStart
+                                                        key={`Start_${index}`}
+                                                        {...sessionItem}
+                                                    />}
+                                                {sessionItem.type === "post" &&
+                                                    <TimeLinePost
+                                                        key={`Topic_${index}`}
+                                                        {...sessionItem}
+                                                    />
+                                                }
+                                                {sessionItem.type === "end" &&
+                                                    <TimeLineEnd
+                                                        key={`End_${index}`}
+                                                        {...sessionItem}
+                                                    />}
+                                            </>
                                         )}
                                     </For>
-                                    {(item.stop_unix && item.start_unix) && <TimeLineStop
-                                        date={item.stop_unix}
-                                        start={item.start_unix}
-                                        stop={item.stop_unix}
-                                        task={item?.task}
-                                    />}
                                 </TimelineRoot>
                             </AreaBody>
                         )}
@@ -92,7 +86,7 @@ export default function SessionArea({sessions}:{sessions:Sessions[]}){
     );
 }
 
-function TimeLineStart(props:{date:number,task?:string}){
+function TimeLineStart(props:MySessionItemStart){
     return(
         <TimelineItem>
             <TimelineConnector bg="teal.solid" color="teal.contrast" fontSize={"md"}>
@@ -105,14 +99,14 @@ function TimeLineStart(props:{date:number,task?:string}){
                     タスクかいし！
                 </TimelineTitle>
                 <TimelineDescription letterSpacing={"wide"}>
-                    {convUnixToIso(props.date)}
+                    {convUnixToIso(props.date_unix)}
                 </TimelineDescription>
             </TimelineContent>
         </TimelineItem>
     );
 }
 
-function TimeLineStop(props:{date:number,start:number,stop:number,task?:string}){
+function TimeLineEnd(props:MySessionItemEnd){
     return (
         <TimelineItem>
             <TimelineConnector bg="pink.solid" color="pink.contrast" fontSize={"md"}>
@@ -124,16 +118,16 @@ function TimeLineStop(props:{date:number,start:number,stop:number,task?:string})
                     {props.task && <br/>}
                     タスクしゅーりょー！
                 </TimelineTitle>
-                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.start,props.stop)}`}</Text>
+                <Text textStyle={"sm"} color={"fg.muted"}>{`経過時間：${calcElapsedTime(props.elapsed)}`}</Text>
                 <TimelineDescription letterSpacing={"wide"}>
-                    {convUnixToIso(props.date)}
+                    {convUnixToIso(props.date_unix)}
                 </TimelineDescription>
             </TimelineContent>
         </TimelineItem>
     );
 }
 
-function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
+function TimeLinePost(props:MySessionItemPost) {
     return (
         <TimelineItem>
             <TimelineConnector bg="blue.solid" color="blue.contrast">
@@ -141,8 +135,8 @@ function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
             </TimelineConnector>
             <TimelineContent>
                 <TopicCard
-                    message={props.topic}
-                    date={props.date}
+                    message={props.message}
+                    date={props.date_unix}
                     textStyle={"md"}
                     rounded={"md"}
                     borderWidth={1}
@@ -154,7 +148,7 @@ function TimeLineTopic(props:{date:number,topic:string,reply?:ReplyInfo}) {
     );
 }
 
-function ReplyAccordion(props:ReplyInfo){
+function ReplyAccordion(props:MyReplyInfo){
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -178,15 +172,19 @@ function ReplyAccordion(props:ReplyInfo){
                         ? (
                             <HStack gap={4} pt={1} pb={0}>
                                 <Avatar
-                                    src={props.avatar}
-                                    name={props.replyName}
+                                    src={todo}
+                                    name={"トドりん"}
                                     size="lg"
                                     shape="rounded"
                                     bg={"transparent"}
                                 />
                                 <VStack gap={0}>
-                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>{props.replyName}</Text>
-                                    <Text w={"100%"} color="fg.muted" textStyle="sm">@{props.replyId}</Text>
+                                    <Text w={"100%"} fontWeight={"semibold"} textStyle={"sm"}>
+                                        トドりん
+                                    </Text>
+                                    <Text w={"100%"} color="fg.muted" textStyle="sm">
+                                        @todorin0909
+                                    </Text>
                                 </VStack>
                             </HStack>
                         )

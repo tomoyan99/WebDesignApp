@@ -1,4 +1,4 @@
-import {Sessions} from "./components/Areas/SessionArea";
+import {MySessions} from "./components/Areas/SessionArea";
 import {getImage} from "./util/getImage";
 import {TaskItem} from "./context/TaskContext";
 

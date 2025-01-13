@@ -1,5 +1,4 @@
 import MyDialog from "../MyDialog";
-import {Text} from "@chakra-ui/react";
 
 interface Props {
     closeDialog: () => void;

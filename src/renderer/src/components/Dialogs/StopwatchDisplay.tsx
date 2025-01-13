@@ -1,6 +1,6 @@
 // import * as React  from 'react';
-import {Box, Text, IconButton, HStack} from '@chakra-ui/react';
-import { FaStop } from "react-icons/fa6";
+import {Box, HStack, IconButton, Text} from '@chakra-ui/react';
+import {FaStop} from "react-icons/fa6";
 import Draggable from 'react-draggable';
 import React from "react";
 

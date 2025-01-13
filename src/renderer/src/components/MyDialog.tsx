@@ -1,5 +1,6 @@
 import {
-    DialogBody, DialogCloseTrigger,
+    DialogBody,
+    DialogCloseTrigger,
     DialogContent,
     DialogFooter,
     DialogHeader,
@@ -9,7 +10,8 @@ import {
 } from "../ui/dialog";
 import {
     DialogBodyProps,
-    DialogContentProps, DialogFooterProps,
+    DialogContentProps,
+    DialogFooterProps,
     DialogHeaderProps,
     DialogRootProps,
     HTMLChakraProps,

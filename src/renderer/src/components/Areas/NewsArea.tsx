@@ -1,7 +1,7 @@
 import {Area, AreaBody, AreaHeader} from "../Area";
 import {Speech} from "../Speech";
 import {For, VStack} from "@chakra-ui/react";
-import { TbMoodSadSquint } from "react-icons/tb";
+import {TbMoodSadSquint} from "react-icons/tb";
 import {EmptyState} from "../../ui/empty-state";
 
 export default function NewsArea({news}:{news:string[]}) {

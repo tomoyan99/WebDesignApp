@@ -1,7 +1,7 @@
 import MyDialog from "../MyDialog";
-import {Textarea,Text} from "@chakra-ui/react";
+import {Text, Textarea} from "@chakra-ui/react";
 import * as React from "react";
-import { Button } from "../../ui/button";
+import {Button} from "../../ui/button";
 import {DialogActionTrigger} from "../../ui/dialog";
 import convUnixToIso from "../../util/convUnixToIso";
 import {PostInfo} from "../Areas/SessionArea";

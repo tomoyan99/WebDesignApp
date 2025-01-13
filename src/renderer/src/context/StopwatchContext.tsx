@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useContext, createContext } from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 
 // ストップウォッチの状態を表す型
 interface StopwatchState {
